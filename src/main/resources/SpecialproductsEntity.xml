@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="https://jakarta.ee/xml/ns/persistence/orm"
+                 version="3.0">
+
+    <entity class="com.example.CashRegister.SpecialproductsEntity">
+        <table name="SPECIALPRODUCTS" schema="SBD_ST_PS11_4" catalog=""/>
+        <attributes>
+            <id name="specialproductId">
+                <column name="SPECIALPRODUCT_ID" precision="2147483646"/>
+            </id>
+            <basic name="specialproductname">
+                <column name="SPECIALPRODUCTNAME" nullable="false"/>
+            </basic>
+            <basic name="rewardthreshold">
+                <column name="REWARDTHRESHOLD" nullable="false" precision="2"/>
+            </basic>
+            <basic name="specialcategoryId">
+                <column name="SPECIALCATEGORY_ID" precision="2147483646"/>
+            </basic>
+        </attributes>
+    </entity>
+</entity-mappings>

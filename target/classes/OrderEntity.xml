@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="https://jakarta.ee/xml/ns/persistence/orm"
+                 version="3.0">
+
+    <entity class="com.example.CashRegister.OrderEntity">
+        <table name="Order" schema="SBD_ST_PS11_4" catalog=""/>
+        <attributes>
+            <id name="orderId">
+                <column name="ORDER_ID" precision="2147483646"/>
+            </id>
+            <basic name="orderdate">
+                <column name="ORDERDATE" precision="-1"/>
+            </basic>
+            <basic name="ordertotalprice">
+                <column name="ORDERTOTALPRICE" precision="2"/>
+            </basic>
+            <basic name="cashregisternumber">
+                <column name="CASHREGISTERNUMBER" precision="2147483646"/>
+            </basic>
+            <basic name="transactiontype">
+                <column name="TRANSACTIONTYPE" length="30"/>
+            </basic>
+            <basic name="membershipId">
+                <column name="MEMBERSHIP_ID" precision="2147483646"/>
+            </basic>
+            <basic name="invoiceId">
+                <column name="INVOICE_ID" precision="2147483646"/>
+            </basic>
+            <basic name="couponId">
+                <column name="COUPON_ID" precision="2147483646"/>
+            </basic>
+            <basic name="employeeId">
+                <column name="EMPLOYEE_ID" precision="2147483646"/>
+            </basic>
+        </attributes>
+    </entity>
+</entity-mappings>

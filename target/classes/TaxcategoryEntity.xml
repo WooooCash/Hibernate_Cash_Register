@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="https://jakarta.ee/xml/ns/persistence/orm"
+                 version="3.0">
+
+    <entity class="com.example.CashRegister.TaxcategoryEntity">
+        <table name="TAXCATEGORY" schema="SBD_ST_PS11_4" catalog=""/>
+        <attributes>
+            <id name="taxcategoryId">
+                <column name="TAXCATEGORY_ID" precision="2147483646"/>
+            </id>
+            <basic name="percentagetax">
+                <column name="PERCENTAGETAX" precision="2"/>
+            </basic>
+            <basic name="taxname">
+                <column name="TAXNAME" nullable="false" length="100"/>
+            </basic>
+        </attributes>
+    </entity>
+</entity-mappings>
