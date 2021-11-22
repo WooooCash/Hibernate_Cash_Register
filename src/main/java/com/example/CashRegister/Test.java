@@ -25,8 +25,8 @@ public class Test {
         try {
             System.out.println("Creating new product object...");
             ProductcategoryEntity pc = new ProductcategoryEntity();
-            pc.setProductcategoryId(2);
-            pc.setName("Categoria_test");
+            pc.setProductcategoryId(3);
+            pc.setName("Categoria_test_2");
             pc.setTaxcategoryId(1);
 
             session.beginTransaction();
