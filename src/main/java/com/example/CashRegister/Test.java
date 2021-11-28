@@ -68,9 +68,27 @@ public class Test {
             login.addListener(new Button.Listener() {
                                   @Override
                                   public void onTriggered(Button button) {
-                                      if (ifEmployeeExists(loginBox.getText())) {
-                                          gui.addWindowAndWait(new BasicWindow("Welcome"));
-                                      } else {
+                                      try {
+                                          if (ifEmployeeExists(Long.parseLong(loginBox.getText()))) {
+                                              gui.addWindow(new BasicWindow("Welcome"));
+                                              // add close button to welcome window
+                                              // add button to close window
+                                              Button close = new Button("Close");
+                                              panel.addComponent(close);
+                                              close.addListener(new Button.Listener() {
+                                                                    @Override
+                                                                    public void onTriggered(Button button) {
+                                                                        gui.removeWindow(window);
+                                                                    }
+                                                                }
+                                              );
+                                              gui.addWindowAndWait(new BasicWindow("Siema"));
+
+                                          } else {
+                                              gui.addWindowAndWait(new BasicWindow("Wrong ID"));
+                                          }
+                                      } catch (NumberFormatException e) {
+                                          e.printStackTrace();
                                           gui.addWindowAndWait(new BasicWindow("Wrong ID"));
                                       }
                                       gui.removeWindow(window);
@@ -167,22 +185,38 @@ public class Test {
 
     }
 
-    // search id employee in database
-    private static boolean ifEmployeeExists(String id) {
-        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(EmployeeEntity.class).buildSessionFactory();
-        Session session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
-        List<EmployeeEntity> employeeEntityList = session.createQuery("from EmployeeEntity").list();
-        for (EmployeeEntity employeeEntity : employeeEntityList) {
-            if (employeeEntity.getEmployeeId() == Integer.parseInt(id)) {
-                System.out.println(employeeEntity.getEmployeeId());
+    // return true if employee exists
+    private static boolean ifEmployeeExists(Long id) {
+        SessionFactory factory = new Configuration()
+                .configure("hibernate.cfg.xml")
+                .addAnnotatedClass(EmployeeEntity.class)
+                .buildSessionFactory();
+
+        //create session
+        Session session = factory.getCurrentSession();
+
+        try {
+            session.beginTransaction();
+
+            EmployeeEntity employee = session.get(EmployeeEntity.class, id);
+            if (employee != null) {
                 return true;
+            } else {
+                return false;
             }
+        } finally {
+            session.close();
         }
-        session.getTransaction().commit();
-        session.close();
-        return false;
     }
+//    private static boolean ifEmployeeExists(String id) {
+//        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(EmployeeEntity.class).buildSessionFactory();
+//        Session session = sessionFactory.getCurrentSession();
+//        session.beginTransaction();
+//        List<EmployeeEntity> employeeEntityList = session.createQuery("from EmployeeEntity where").getResultList();
+//        session.getTransaction().commit();
+//        session.close();
+//        return false;
+//    }
 
 }
 
