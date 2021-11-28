@@ -1,33 +1,19 @@
 package com.example.CashRegister;
 
 import com.googlecode.lanterna.*;
-import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.gui2.*;
-import com.googlecode.lanterna.gui2.dialogs.*;
-import com.googlecode.lanterna.input.KeyStroke;
-import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
-import com.googlecode.lanterna.screen.TerminalScreen;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import com.googlecode.lanterna.terminal.*;
-import org.hibernate.internal.build.AllowSysOut;
 
-import java.io.File;
 import java.io.IOException;
-import java.sql.SQLOutput;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.TimeZone;
-import java.util.function.Supplier;
-import java.util.regex.Pattern;
+import java.util.*;
 
 import static java.lang.Thread.sleep;
 
 public class Test {
-
 
 
     public Test() throws IOException {
@@ -52,31 +38,79 @@ public class Test {
 
 
             TerminalSize size = new TerminalSize(14, 10);
-            CheckBoxList<String> list = new CheckBoxList<>(size);
-            panel.addComponent(list);
-            for (int i = 0; i < 10; i++) {
-                list.addItem("item " + i);
-            }
+
+            // add title to panel
+            Label title = new Label("Welcome to the Cash Register");
+            title.setLayoutData(GridLayout.createHorizontallyFilledLayoutData(2));
+            panel.addComponent(title);
+
+            panel.addComponent(new EmptySpace(new TerminalSize(1, 1)));
+            panel.addComponent(new EmptySpace(new TerminalSize(1, 1)));
+            panel.addComponent(new EmptySpace(new TerminalSize(1, 1)));
+            panel.addComponent(new EmptySpace(new TerminalSize(1, 1)));
 
 
-            panel.addComponent(new Separator(Direction.HORIZONTAL).setLayoutData(GridLayout.createHorizontallyFilledLayoutData(2)));
+            // add input to login
+            Label worker_id = new Label("Worker ID:");
+            panel.addComponent(worker_id);
+            TextBox loginBox = new TextBox();
+            panel.addComponent(loginBox);
+
+            // add horizontal line
+            panel.addComponent(new EmptySpace(new TerminalSize(1, 1)));
+            panel.addComponent(new EmptySpace(new TerminalSize(1, 1)));
+
+            // add button to login on left side
+            Button login = new Button("Login");
+            panel.addComponent(login);
+
+            // if login is pressed, check if worker id is correct
+            login.addListener(new Button.Listener() {
+                                  @Override
+                                  public void onTriggered(Button button) {
+                                      if (ifEmployeeExists(loginBox.getText())) {
+                                          gui.addWindowAndWait(new BasicWindow("Welcome"));
+                                      } else {
+                                          gui.addWindowAndWait(new BasicWindow("Wrong ID"));
+                                      }
+                                      gui.removeWindow(window);
+                                  }
+                              }
+            );
+
+
+            // if worker id is correct, open new window
+            // if worker id is incorrect, display error message
+
+
+//            CheckBoxList<String> list = new CheckBoxList<>(size);
+//            panel.addComponent(list);
+//            for (int i = 0; i < 10; i++) {
+//                list.addItem("item " + i);
+//            }
+
+//            aaaaaaaaaaaaaaaaaaaaaxxxdfasdfaspodffastaf
+            //  add panel to window
+            window.setComponent(panel);
+
 
 //
-            new Button("Fuck me", new Runnable() {
-                @Override
-                public void run() {
-                    List<String> checkedItems = list.getCheckedItems();
+//            new Button("Fuck me", new Runnable() {
+//                @Override
+//                public void run() {
+//                    //List<String> checkedItems = list.getCheckedItems();
+//
+//                    System.out.println(checkedItems);
+//
+//                    File input = new FileDialogBuilder()
+//                            .setTitle("Open File")
+//                            .setDescription("Choose a file")
+//                            .setActionLabel("Open")
+//                            .build()
+//                            .showDialog(gui);
+//                }
+//            }).addTo(panel);
 
-                    System.out.println(checkedItems);
-
-                    File input = new FileDialogBuilder()
-                            .setTitle("Open File")
-                            .setDescription("Choose a file")
-                            .setActionLabel("Open")
-                            .build()
-                            .showDialog(gui);
-                }
-            }).addTo(panel);
 
 // Create window to hold the panel
             window.setComponent(panel);
@@ -85,18 +119,17 @@ public class Test {
             // Create gui and start gui
             gui.addWindowAndWait(window);
 
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             if (screen != null) {
                 try {
                     screen.close();
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
-
 
 
 //        SessionFactory factory = new Configuration()
@@ -132,6 +165,23 @@ public class Test {
 //            factory.close();
 //        }
 
+    }
+
+    // search id employee in database
+    private static boolean ifEmployeeExists(String id) {
+        SessionFactory sessionFactory = new Configuration().configure("hibernate.cfg.xml").addAnnotatedClass(EmployeeEntity.class).buildSessionFactory();
+        Session session = sessionFactory.getCurrentSession();
+        session.beginTransaction();
+        List<EmployeeEntity> employeeEntityList = session.createQuery("from EmployeeEntity").list();
+        for (EmployeeEntity employeeEntity : employeeEntityList) {
+            if (employeeEntity.getEmployeeId() == Integer.parseInt(id)) {
+                System.out.println(employeeEntity.getEmployeeId());
+                return true;
+            }
+        }
+        session.getTransaction().commit();
+        session.close();
+        return false;
     }
 
 }
