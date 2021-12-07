@@ -1,82 +1,87 @@
 package com.example.CashRegister;
 
-import com.googlecode.lanterna.*;
-import com.googlecode.lanterna.gui2.*;
-import com.googlecode.lanterna.screen.Screen;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import com.googlecode.lanterna.terminal.*;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
 
 import static java.lang.Thread.sleep;
 
 public class Test {
 
 
+
     public Test() throws IOException {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-
-        //create session factory
-
-        DefaultTerminalFactory dtf = new DefaultTerminalFactory();
-
-        Screen screen = null;
-        try {
-            screen = dtf.createScreen();
-            screen.startScreen();
-
-            // Create panel to hold components
-            Panel panel = new Panel();
-            panel.setLayoutManager(new GridLayout(2));
-            BasicWindow window = new BasicWindow();
-            MultiWindowTextGUI gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
+        Application app = Application.getApp();
+        app.start();
 
 
-            TerminalSize size = new TerminalSize(14, 10);
 
-            // add title to panel
-            Label title = new Label("Welcome to the Cash Register");
-            title.setLayoutData(GridLayout.createHorizontallyFilledLayoutData(2));
-            panel.addComponent(title);
-
-            panel.addComponent(new EmptySpace(new TerminalSize(1, 1)));
-            panel.addComponent(new EmptySpace(new TerminalSize(1, 1)));
-            panel.addComponent(new EmptySpace(new TerminalSize(1, 1)));
-            panel.addComponent(new EmptySpace(new TerminalSize(1, 1)));
-
-
-            // add input to login
-            Label worker_id = new Label("Worker ID:");
-            panel.addComponent(worker_id);
-            TextBox loginBox = new TextBox();
-            panel.addComponent(loginBox);
-
-            // add horizontal line
-            panel.addComponent(new EmptySpace(new TerminalSize(1, 1)));
-            panel.addComponent(new EmptySpace(new TerminalSize(1, 1)));
-
-            // add button to login on left side
-            Button login = new Button("Login");
-            panel.addComponent(login);
-
-            // if login is pressed, check if worker id is correct
-            login.addListener(new Button.Listener() {
-                                  @Override
-                                  public void onTriggered(Button button) {
-                                      if (ifEmployeeExists(loginBox.getText())) {
-                                          gui.addWindowAndWait(new BasicWindow("Welcome"));
-                                      } else {
-                                          gui.addWindowAndWait(new BasicWindow("Wrong ID"));
-                                      }
-                                      gui.removeWindow(window);
-                                  }
-                              }
-            );
+//        //create session factory
+//
+//        DefaultTerminalFactory dtf = new DefaultTerminalFactory();
+//
+//        Screen screen = null;
+//        try {
+//            screen = dtf.createScreen();
+//            screen.startScreen();
+//
+//            // Create panel to hold components
+//            Panel panel = new Panel();
+//            panel.setLayoutManager(new GridLayout(2));
+//            BasicWindow window = new BasicWindow();
+//            MultiWindowTextGUI gui = new MultiWindowTextGUI(screen, new DefaultWindowManager(), new EmptySpace(TextColor.ANSI.BLUE));
+//
+//
+//            TerminalSize size = new TerminalSize(14, 10);
+//
+//            // add title to panel
+//            Label title = new Label("Welcome to the Cash Register");
+//            title.setLayoutData(GridLayout.createHorizontallyFilledLayoutData(2));
+//            panel.addComponent(title);
+//
+//            panel.addComponent(new EmptySpace(new TerminalSize(1, 1)));
+//            panel.addComponent(new EmptySpace(new TerminalSize(1, 1)));
+//            panel.addComponent(new EmptySpace(new TerminalSize(1, 1)));
+//            panel.addComponent(new EmptySpace(new TerminalSize(1, 1)));
+//
+//
+//            // add input to login
+//            Label worker_id = new Label("Worker ID:");
+//            panel.addComponent(worker_id);
+//            TextBox loginBox = new TextBox();
+//            panel.addComponent(loginBox);
+//
+//            // add horizontal line
+//            panel.addComponent(new EmptySpace(new TerminalSize(1, 1)));
+//            panel.addComponent(new EmptySpace(new TerminalSize(1, 1)));
+//
+//            // add button to login on left side
+//            Button login = new Button("Login");
+//            panel.addComponent(login);
+//
+//            // if login is pressed, check if worker id is correct
+//            login.addListener(new Button.Listener() {
+//                                  @Override
+//                                  public void onTriggered(Button button) {
+//                                      if (ifEmployeeExists(loginBox.getText())) {
+//                                          gui.addWindowAndWait(new BasicWindow("Welcome"));
+//                                      } else {
+//                                          gui.addWindowAndWait(new BasicWindow("Wrong ID"));
+//                                      }
+//                                      gui.removeWindow(window);
+//                                  }
+//                              }
+//            );
 
 
             // if worker id is correct, open new window
@@ -91,7 +96,7 @@ public class Test {
 
 //            aaaaaaaaaaaaaaaaaaaaaxxxdfasdfaspodffastaf
             //  add panel to window
-            window.setComponent(panel);
+//            window.setComponent(panel);
 
 
 //
@@ -113,23 +118,23 @@ public class Test {
 
 
 // Create window to hold the panel
-            window.setComponent(panel);
+//            window.setComponent(panel);
 
 
-            // Create gui and start gui
-            gui.addWindowAndWait(window);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (screen != null) {
-                try {
-                    screen.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+//            // Create gui and start gui
+//            gui.addWindowAndWait(window);
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (screen != null) {
+//                try {
+//                    screen.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
 
 
 //        SessionFactory factory = new Configuration()
@@ -183,6 +188,7 @@ public class Test {
         session.close();
         return false;
     }
+
 
 }
 
