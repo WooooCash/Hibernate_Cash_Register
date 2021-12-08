@@ -12,7 +12,7 @@ public class MainFrame extends JFrame {
     private JFrame frame;
     private JPanel leftPanel;
     private JPanel centerPanel;
-
+    private JPanel managerPanel;
     public MainFrame() {
 
 
@@ -58,12 +58,22 @@ public class MainFrame extends JFrame {
         }
         updateComponent(leftPanel);
 
-
-        //Add content based on some sort of int/enum/bool depending on role
-        if (status == 0) {} // create new panel for regular employee
-        else if (status == 1) {} // create new panel for manager
         centerPanel = new JPanel(); //switch out for custom panel class? based on user priviledges
         centerPanel.setBackground(Color.blue);
+        //Add content based on some sort of int/enum/bool depending on role
+        if (status == 0) {} // create new panel for regular employee
+        else if (status == 1) {
+
+//            GridLayout experimentLayout = new GridLayout(8,10);
+            centerPanel.setLayout();
+            centerPanel.add(new JButton("Button"));
+            centerPanel.add(new JButton("Button"));
+//            centerPanel.add(new JButton("Button"));
+//            centerPanel.add(new JButton("Button"));
+//            centerPanel.add(new JButton("Button"));
+
+        } // create new panel for manager
+
 
         frame.add(centerPanel, BorderLayout.CENTER);
 

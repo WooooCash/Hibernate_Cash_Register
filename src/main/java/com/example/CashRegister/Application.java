@@ -4,7 +4,7 @@ public class Application {
     private static Application app = new Application();
 
     MainFrame mainFrame;
-
+//    DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
     public static Application getApp() {
         return app;
     }
@@ -19,14 +19,15 @@ public class Application {
         String realUser = "user";
         String realPass = "pass";
         System.out.println("Your credentials: " + username + " " + password);
-
-        if (username.equals(realUser) && password.equals(realPass)) {
+//
+//        databaseEndpoint.login(realUser, realPass)
+        if ( username.equals(realUser) && password.equals(realPass) ) {
             System.out.println("Successfully logged in as: " + username);
             mainFrame.loggedIn(username, 1);// status indicates if succesfully logged in and what privildedges are granted to the user
             return true;
         }
-
-        System.out.println("Invalid credentials");
+        else
+            System.out.println("Invalid credentials");
         return false;
 
     }
