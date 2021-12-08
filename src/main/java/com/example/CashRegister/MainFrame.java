@@ -43,6 +43,7 @@ public class MainFrame extends JFrame {
         frame.add(leftPanel, BorderLayout.WEST);
 
         frame.pack();
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
