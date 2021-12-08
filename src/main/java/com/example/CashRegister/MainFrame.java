@@ -60,11 +60,11 @@ public class MainFrame extends JFrame {
 
 
         //Add content based on some sort of int/enum/bool depending on role
-        if (status == 0) {} // create new panel for regular employee
-        else if (status == 1) {} // create new panel for manager
+        if (status == 0) {centerPanel = new EmployeeDashboardPanel();} // create new panel for regular employee
+        else if (status == 1) {centerPanel = new ManagerDashboardPanel();} // create new panel for manager
 //        centerPanel = new JPanel(); //switch out for custom panel class? based on user priviledges
 //        centerPanel.setBackground(Color.blue);
-        centerPanel = new EmployeeDashboardPanel();
+
 
         frame.add(centerPanel, BorderLayout.CENTER);
 
