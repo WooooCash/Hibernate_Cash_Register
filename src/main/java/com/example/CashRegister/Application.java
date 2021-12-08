@@ -22,7 +22,7 @@ public class Application {
 
         if (username.equals(realUser) && password.equals(realPass)) {
             System.out.println("Successfully logged in as: " + username);
-            mainFrame.loggedIn(username);
+            mainFrame.loggedIn(username, 1);// status indicates if succesfully logged in and what privildedges are granted to the user
             return true;
         }
 
