@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="10b8db51-a25b-4bdc-8fd8-f397615e9137" name="Changes" comment="Changes">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/CashRegister/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/CashRegister/Application.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/CashRegister/MainFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/CashRegister/MainFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2021-11-28_10_35_p_m___Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2021-11-28_10_35_p_m___Changes_.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/CashRegister/Application.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/CashRegister/Application.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/example/CashRegister/MainFrame$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/example/CashRegister/MainFrame$1.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
