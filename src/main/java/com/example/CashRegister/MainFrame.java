@@ -11,6 +11,7 @@ public class MainFrame extends JFrame {
 
     private JFrame frame;
     private JPanel leftPanel;
+    private JPanel centerPanel;
 
     public MainFrame() {
 
@@ -45,12 +46,29 @@ public class MainFrame extends JFrame {
         frame.setVisible(true);
     }
 
-    public void loggedIn(String username) {
+    public void loggedIn(String username, int status) {
         leftPanel.remove(leftPanel.getComponent(0));
 
         JLabel loggedInText = new JLabel("Welcome " + username + "!");
         leftPanel.add(loggedInText);
+
+        //Add new button options to left Panel and add center panel
+        for (int i = 0; i < 6; i++) {
+            leftPanel.add(new JButton("Button" + i));
+        }
         updateComponent(leftPanel);
+
+
+        //Add content based on some sort of int/enum/bool depending on role
+        if (status == 0) {} // create new panel for regular employee
+        else if (status == 1) {} // create new panel for manager
+        centerPanel = new JPanel(); //switch out for custom panel class? based on user priviledges
+        centerPanel.setBackground(Color.blue);
+
+        frame.add(centerPanel, BorderLayout.CENTER);
+
+
+
     }
 
     private void updateComponent(JComponent component) {
