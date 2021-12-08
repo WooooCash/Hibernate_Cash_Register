@@ -29,18 +29,22 @@ public class MainFrame extends JFrame {
         leftPanel.setPreferredSize(new Dimension(150, 0));
         leftPanel.setBackground(Color.cyan);
 
+        centerPanel = new JPanel();
+        centerPanel.setLayout(new BorderLayout());
+
         JButton loginButton = new JButton("Login");
         loginButton.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                LoginFrame loginFrame = new LoginFrame(frame);
+                LoginFrame loginFrame = new LoginFrame();
             }
         });
 
         leftPanel.add(loginButton);
 
         frame.add(leftPanel, BorderLayout.WEST);
+        frame.add(centerPanel);
 
         frame.pack();
         frame.setLocationRelativeTo(null);
@@ -59,18 +63,7 @@ public class MainFrame extends JFrame {
         }
         updateComponent(leftPanel);
 
-
-        //Add content based on some sort of int/enum/bool depending on role
-        if (status == 0) {centerPanel = new EmployeeDashboardPanel();} // create new panel for regular employee
-        else if (status == 1) {centerPanel = new ManagerDashboardPanel();} // create new panel for manager
-//        centerPanel = new JPanel(); //switch out for custom panel class? based on user priviledges
-//        centerPanel.setBackground(Color.blue);
-
-
-        frame.add(centerPanel, BorderLayout.CENTER);
-
-
-
+        setDashboardPage(status);
     }
 
     private void updateComponent(JComponent component) {
@@ -78,5 +71,19 @@ public class MainFrame extends JFrame {
         component.repaint();
     }
 
+    public void setDashboardPage(int status) {
+        if (centerPanel.getComponentCount() != 0)
+            centerPanel.remove(0);
 
+        if (status == 0) {centerPanel.add(new EmployeeDashboardPanel(this), BorderLayout.CENTER);} // create new panel for regular employee
+        else if (status == 1) {centerPanel.add(new ManagerDashboardPanel(), BorderLayout.CENTER);} // create new panel for manager
+        updateComponent(centerPanel);
+    }
+
+    public void setAssistanceRequestPage() {
+        System.out.println("halo");
+        centerPanel.remove(0);
+        centerPanel.add(new AssistanceRequestPanel(this), BorderLayout.CENTER);
+        updateComponent(centerPanel);
+    }
 }
