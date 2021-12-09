@@ -6,6 +6,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Supplier;
@@ -51,18 +55,43 @@ public class DatabaseEndpoint extends Thread {
         session.close();
         return !is_employee_manager.isEmpty() ? 0 : 1;
     }
-    public static boolean login(String name, String password){
+    public static int[] login(String name, String password){
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        String sql = "select e.name, e.password from EmployeeEntity e where e.name=:name and e.password=:password";
+        String sql = "select e.employeeId, e.gender from EmployeeEntity e where e.name=:name and e.password=:password";
         Query query = session.createQuery(sql);
-        System.out.println(query);
+        //System.out.println(query);
         query.setParameter("name", name)
                 .setParameter("password", password);
-        List nameInDatabase = query.list();
+        List lista = query.list();
+        Object[] dane = (Object[]) lista.get(0);
+
         session.close();
-        return !nameInDatabase.isEmpty();
+
+
+        return new int[] {!lista.isEmpty() ? 1 : 0, !lista.isEmpty() ? ((Long)dane[0]).intValue() : -1};
     }
+
+    public void saveNewAssistanceRequest(int empId, String description) {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+
+        AssistancerequestEntity ar = new AssistancerequestEntity();
+        ar.setDescription(description);
+        //Date date = LocalDate.now();
+
+        ar.setDatetimeofrequest(new Date());
+        int requestId = ((Long)session.save(ar)).intValue();
+
+        EmployeeassistancerequestEntity ear = new EmployeeassistancerequestEntity();
+        ear.setRequestId(requestId);
+        ear.setEmployeeId(empId);
+        session.save(ear);
+
+        session.getTransaction().commit();
+        session.close();
+    }
+
     public static void closeConnection(){
         factory.close();
         System.out.println("closing works");
