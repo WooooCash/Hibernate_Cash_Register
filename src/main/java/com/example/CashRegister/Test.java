@@ -14,15 +14,29 @@ import java.util.List;
 import static java.lang.Thread.sleep;
 
 public class Test {
+    //     #TODO testing database
 
-
-
+//    public static DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
+//    public static class ShutdownConnectionClose extends Thread {
+//        public void run() {
+//            databaseEndpoint.closeConnection();
+//        }
+//    }
     public Test() throws IOException {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
         Application app = Application.getApp();
         app.start();
+//        #TODO testing database
+//        try{
+//            Runtime.getRuntime().addShutdownHook(new ShutdownConnectionClose());
+////            databaseEndpoint.addTaxcategoryEntity("sda", 5.0f);
+////            databaseEndpoint.deleteTaxcategoryEntity(46);
+//            databaseEndpoint.updateTaxcategoryEntity(46, "Podatek D", 0.05f);
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }
 //        DatabaseEndpoint p = DatabaseEndpoint.getDatabaseEndpoint();
 //        p.login("jager", "haslo");
 
