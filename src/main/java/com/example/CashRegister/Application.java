@@ -23,12 +23,18 @@ public class Application {
 //        databaseEndpoint.login(realUser, realPass)
         if ( username.equals(realUser) && password.equals(realPass) ) {
             System.out.println("Successfully logged in as: " + username);
-            mainFrame.loggedIn(username, 1);// status indicates if succesfully logged in and what privildedges are granted to the user
+            mainFrame.loggedIn(username, 0);// status indicates if succesfully logged in and what privildedges are granted to the user
             return true;
         }
         else
             System.out.println("Invalid credentials");
         return false;
 
+    }
+
+    public void sendAssistanceRequest(String description) {
+        //send this description to database
+        System.out.println("Description: " + description);
+        mainFrame.setDashboardPage(0);
     }
 }
