@@ -52,7 +52,7 @@ public class DatabaseEndpoint extends Thread {
         session.close();
         return !is_employee_manager.isEmpty() ? 0 : 1;
     }
-
+//comment
     public boolean login(String name, String password) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
