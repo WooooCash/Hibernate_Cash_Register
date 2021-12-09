@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 
 public class DatabaseEndpoint extends Thread {
     private static DatabaseEndpoint databaseEndpoint = new DatabaseEndpoint();
-    private static SessionFactory factory;
+    private SessionFactory factory;
 
     private DatabaseEndpoint() {
         factory =
@@ -38,7 +38,7 @@ public class DatabaseEndpoint extends Thread {
     public static DatabaseEndpoint getDatabaseEndpoint() {
         return databaseEndpoint;
     }
-    public static int basicEmployeeReturn0ManagerReturn1(String name){
+    public int basicEmployeeReturn0ManagerReturn1(String name){
         Session session = factory.getCurrentSession();
         session.beginTransaction();
         String sql = "select e.name, e.password from EmployeeEntity e " +
@@ -51,7 +51,7 @@ public class DatabaseEndpoint extends Thread {
         session.close();
         return !is_employee_manager.isEmpty() ? 0 : 1;
     }
-    public static boolean login(String name, String password){
+    public boolean login(String name, String password){
         Session session = factory.getCurrentSession();
         session.beginTransaction();
         String sql = "select e.name, e.password from EmployeeEntity e where e.name=:name and e.password=:password";
@@ -63,7 +63,7 @@ public class DatabaseEndpoint extends Thread {
         session.close();
         return !nameInDatabase.isEmpty();
     }
-    public static void closeConnection(){
+    public void closeConnection(){
         factory.close();
         System.out.println("closing works");
     }
