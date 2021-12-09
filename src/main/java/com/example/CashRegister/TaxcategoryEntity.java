@@ -1,8 +1,6 @@
 package com.example.CashRegister;
 
-import javax.persistence.Basic;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @javax.persistence.Table(name = "TAXCATEGORY", schema = "SBD_ST_PS11_4", catalog = "")
@@ -10,6 +8,7 @@ public class TaxcategoryEntity {
     private long taxcategoryId;
 
     @Id
+    @GeneratedValue (strategy = GenerationType.AUTO)
     @javax.persistence.Column(name = "TAXCATEGORY_ID", nullable = false, precision = 0)
     public long getTaxcategoryId() {
         return taxcategoryId;
