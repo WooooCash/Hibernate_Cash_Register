@@ -1,17 +1,33 @@
 package com.example.CashRegister;
 
 public class Application {
-    private static Application app = new Application();
+//    needed for closing application database shutdown
+//      #TODO uncomment for database connection
 
+//    public static class ShutdownConnectionClose extends Thread {
+//        public void run() {
+//            databaseEndpoint.closeConnection();
+//        }
+//    }
+
+    private static Application app = new Application();
+//      #TODO uncomment for database connection
+//    private static DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
     MainFrame mainFrame;
-//    DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
     public static Application getApp() {
         return app;
     }
 
     public void start() {
-        mainFrame = new MainFrame();
-        mainFrame.initialize();
+        try{
+            //      #TODO uncomment for database connection
+//            Runtime.getRuntime().addShutdownHook(new ShutdownConnectionClose());
+            mainFrame = new MainFrame();
+            mainFrame.initialize();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     public boolean login(String username, String password) {
@@ -19,17 +35,20 @@ public class Application {
         String realUser = "user";
         String realPass = "pass";
         System.out.println("Your credentials: " + username + " " + password);
-//
-//        databaseEndpoint.login(realUser, realPass)
+//             #TODO uncomment for database connection
+//        if( databaseEndpoint.login(username, password) ){
         if ( username.equals(realUser) && password.equals(realPass) ) {
             System.out.println("Successfully logged in as: " + username);
+//             #TODO uncomment for database connection
+//            int isEmployeeManager = databaseEndpoint.basicEmployeeReturn0ManagerReturn1(username);
+//            mainFrame.loggedIn(username, isEmployeeManager);// status indicates if succesfully logged in and what privildedges are granted to the user
             mainFrame.loggedIn(username, 0);// status indicates if succesfully logged in and what privildedges are granted to the user
+
             return true;
         }
         else
             System.out.println("Invalid credentials");
         return false;
-
     }
 
     public void sendAssistanceRequest(String description) {

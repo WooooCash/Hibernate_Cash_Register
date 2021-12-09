@@ -74,7 +74,7 @@ public class MainFrame extends JFrame {
     public void setDashboardPage(int status) {
         if (centerPanel.getComponentCount() != 0)
             centerPanel.remove(0);
-
+        System.out.println(status);
         if (status == 0) {centerPanel.add(new EmployeeDashboardPanel(this), BorderLayout.CENTER);} // create new panel for regular employee
         else if (status == 1) {centerPanel.add(new ManagerDashboardPanel(), BorderLayout.CENTER);} // create new panel for manager
         updateComponent(centerPanel);

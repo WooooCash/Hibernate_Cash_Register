@@ -8,8 +8,9 @@ import org.hibernate.query.Query;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Supplier;
 
-public class DatabaseEndpoint {
+public class DatabaseEndpoint extends Thread {
     private static DatabaseEndpoint databaseEndpoint = new DatabaseEndpoint();
     private static SessionFactory factory;
 
@@ -18,6 +19,18 @@ public class DatabaseEndpoint {
             new Configuration().configure("hibernate.cfg.xml")
                 .addAnnotatedClass(AssistancerequestEntity.class)
                 .addAnnotatedClass(CouponEntity.class)
+                .addAnnotatedClass(EmployeeassistancerequestEntity.class)
+                .addAnnotatedClass(EmployeeEntity.class)
+                .addAnnotatedClass(InvoiceEntity.class)
+                .addAnnotatedClass(MembershipaccountEntity.class)
+                .addAnnotatedClass(ProductcategoryEntity.class)
+                .addAnnotatedClass(ProductcategoryEntity.class)
+                .addAnnotatedClass(ProductEntity.class)
+                .addAnnotatedClass(ProductorderEntity.class)
+                .addAnnotatedClass(SpecialproductsEntity.class)
+                .addAnnotatedClass(SpecialproductcategoryEntity.class)
+                .addAnnotatedClass(SupplierEntity.class)
+                .addAnnotatedClass(TaxcategoryEntity.class)
                 .buildSessionFactory();
     }
 
@@ -25,26 +38,34 @@ public class DatabaseEndpoint {
     public static DatabaseEndpoint getDatabaseEndpoint() {
         return databaseEndpoint;
     }
-    public static boolean managerOrCashier(String name){
+    public static int basicEmployeeReturn0ManagerReturn1(String name){
         Session session = factory.getCurrentSession();
-
-        String sql = "select name, password from employee where employee_id not in (select nvl(managerid,0) from employee) and name = :employeeName";
+        session.beginTransaction();
+        String sql = "select e.name, e.password from EmployeeEntity e " +
+                "where e.employeeId not in (select nvl(e2.managerid,0) from EmployeeEntity e2) " +
+                "and e.name = :name";
         Query query = session.createQuery(sql);
-        query.setParameter("employee_name", name);
+        query.setParameter("name", name);
         List is_employee_manager = query.list();
+        System.out.println(is_employee_manager);
         session.close();
-        return is_employee_manager != null;
+        return !is_employee_manager.isEmpty() ? 0 : 1;
     }
     public static boolean login(String name, String password){
         Session session = factory.getCurrentSession();
-        String sql = "select 1 from employee where name = :name and password = :password";
+        session.beginTransaction();
+        String sql = "select e.name, e.password from EmployeeEntity e where e.name=:name and e.password=:password";
         Query query = session.createQuery(sql);
-        query.setParameter("employee_name", name.toLowerCase(Locale.ROOT))
+        System.out.println(query);
+        query.setParameter("name", name)
                 .setParameter("password", password);
         List nameInDatabase = query.list();
         session.close();
-        return nameInDatabase != null;
+        return !nameInDatabase.isEmpty();
     }
-
+    public static void closeConnection(){
+        factory.close();
+        System.out.println("closing works");
+    }
 
 }
