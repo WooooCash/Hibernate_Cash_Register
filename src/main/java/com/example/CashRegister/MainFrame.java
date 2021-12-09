@@ -86,4 +86,15 @@ public class MainFrame extends JFrame {
         centerPanel.add(new AssistanceRequestPanel(this), BorderLayout.CENTER);
         updateComponent(centerPanel);
     }
+
+//    public void createOrder() {
+//        centerPanel.remove(0);
+//        centerPanel.add(new OrderPanel(this), BorderLayout.CENTER);
+//        updateComponent(centerPanel);
+//    }
+
+    public void createOrder() {
+        JFrame frame = new OrderDashboard();
+        frame.setVisible(true);
+    }
 }
