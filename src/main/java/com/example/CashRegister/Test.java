@@ -23,8 +23,8 @@ public class Test {
     public static void main(String[] args) throws IOException, InterruptedException {
         Application app = Application.getApp();
         app.start();
-
-
+//        DatabaseEndpoint p = DatabaseEndpoint.getDatabaseEndpoint();
+//        p.login("jager", "haslo");
 
 //        //create session factory
 //
