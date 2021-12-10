@@ -16,6 +16,12 @@ public class ManagerDashboardPanel extends JPanel {
         this.setLayout(new GridLayout());
 
         createOrderButton = new JButton("NEW ORDER");
+        createOrderButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainFrame.createOrder();
+            }
+        });
         checkAssistanceRequestsButton = new JButton("CHECK ASSISTANCE REQUESTS");
         checkAssistanceRequestsButton.addActionListener(new ActionListener() {
             @Override
