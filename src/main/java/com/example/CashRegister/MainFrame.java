@@ -103,4 +103,10 @@ public class MainFrame extends JFrame {
         JFrame frame = new OrderDashboard();
         frame.setVisible(true);
     }
+
+    public void setProfitSummaryPage() {
+        centerPanel.remove(0);
+        centerPanel.add(new ProfitSummaryPanel(this), BorderLayout.CENTER);
+        updateComponent(centerPanel);
+    }
 }
