@@ -1,49 +1,40 @@
 package com.example.CashRegister;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class AssistanceRequestReceiverPanel extends JPanel{
     private Application app;
 
-    private JScrollPane panelForReceivedRequests;
-    private JTextArea textArea;
-    private JButton sendButton;
+    private JScrollPane requestScrollPane;
+//    private JTextArea textArea;
+//    private JButton sendButton;
     Integer[] data = {1,2,4,5};
-    JList<Integer> l = new JList<Integer>(data);
-//    public AssistanceRequestReceiverPanel(){
-
-//    }
+    JList<Integer> requestList;
 
     public AssistanceRequestReceiverPanel(MainFrame mainFrame){
         app = Application.getApp();
         this.setLayout(new BorderLayout());
-//        this.setBorder(new EmptyBorder(new Insets(10, 50, 10, 50)));
 
-//        panelForReceivedRequests = new JScrollPane();
-        JPanel bottomPanel = new JPanel();
+        Integer[] testData = new Integer[200];
+        for (int i = 0; i < 200; i++) testData[i] = i;
 
-        panelForReceivedRequests = new JScrollPane(bottomPanel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        requestList = new JList<Integer>(testData);
 
-//        mainFrame.getContentPane().setLayout(null);
-//        mainFrame.getContentPane().add(panelForReceivedRequests);
-//        this.add(new JLabel("somethin"));
-//        panelForReceivedRequests.setViewportView(bottomPanel);
+        requestList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        bottomPanel.setPreferredSize(new Dimension(0, 100));
-        for(int i =0 ; i< 1000; i++){
-            bottomPanel.add(new JButton("somethin"));
-        }
-        this.add(bottomPanel);
-//        this.add(new JButton("somethin"));
-//        this.add(new JButton("somethin"));
-//        this.add(new JButton("somethin"));
-//        this.add(panelForReceivedRequests, BorderLayout.NORTH);
+        JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new BorderLayout());
 
-//        this.setBorder(new EmptyBorder(new Insets(10, 50, 10, 50)));
+        leftPanel.setPreferredSize(new Dimension(200, 0));
+
+        requestScrollPane = new JScrollPane(requestList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        leftPanel.add(requestScrollPane, BorderLayout.CENTER);
 
 
+        this.add(leftPanel, BorderLayout.WEST);
     }
-
 }

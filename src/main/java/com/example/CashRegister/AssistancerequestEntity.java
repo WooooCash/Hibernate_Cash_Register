@@ -1,7 +1,9 @@
 package com.example.CashRegister;
 
 import javax.persistence.Entity;
+import javax.persistence.GenerationType;
 import java.sql.Time;
+import java.util.Date;
 
 @Entity
 @javax.persistence.Table(name = "ASSISTANCEREQUEST", schema = "SBD_ST_PS11_4", catalog = "")
@@ -9,6 +11,7 @@ public class AssistancerequestEntity {
     private long requestId;
 
     @javax.persistence.Id
+    @javax.persistence.GeneratedValue(strategy = GenerationType.AUTO)
     @javax.persistence.Column(name = "REQUEST_ID", nullable = false, precision = 0)
     public long getRequestId() {
         return requestId;
@@ -30,15 +33,15 @@ public class AssistancerequestEntity {
         this.description = description;
     }
 
-    private Time datetimeofrequest;
+    private Date datetimeofrequest;
 
     @javax.persistence.Basic
     @javax.persistence.Column(name = "DATETIMEOFREQUEST", nullable = false)
-    public Time getDatetimeofrequest() {
+    public Date getDatetimeofrequest() {
         return datetimeofrequest;
     }
 
-    public void setDatetimeofrequest(Time datetimeofrequest) {
+    public void setDatetimeofrequest(Date datetimeofrequest) {
         this.datetimeofrequest = datetimeofrequest;
     }
 
