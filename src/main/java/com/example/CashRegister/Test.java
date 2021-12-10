@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
@@ -33,12 +34,15 @@ public class Test {
 //            Runtime.getRuntime().addShutdownHook(new ShutdownConnectionClose());
 ////            databaseEndpoint.addTaxcategoryEntity("sda", 5.0f);
 ////            databaseEndpoint.deleteTaxcategoryEntity(46);
-//            databaseEndpoint.updateTaxcategoryEntity(46, "Podatek D", 0.05f);
+////            databaseEndpoint.updateTaxcategoryEntity(46, "Podatek D", 0.05f);
+////            databaseEndpoint.addProductOrderEntity(2, 3, 1);
+////            databaseEndpoint.deleteProductOrderId(3, 1);
+////            ArrayList<ProductEntity> ar = databaseEndpoint.getAllProducts();
+////            System.out.println(ar.get(0));
 //        }catch(Exception e){
 //            e.printStackTrace();
 //        }
-//        DatabaseEndpoint p = DatabaseEndpoint.getDatabaseEndpoint();
-//        p.login("jager", "haslo");
+
 
 //        //create session factory
 //

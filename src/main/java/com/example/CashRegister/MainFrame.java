@@ -100,6 +100,7 @@ public class MainFrame extends JFrame {
 //    }
 
     public void createOrder() {
+        System.out.println("weszlo");
         JFrame frame = new OrderDashboard();
         frame.setVisible(true);
     }
