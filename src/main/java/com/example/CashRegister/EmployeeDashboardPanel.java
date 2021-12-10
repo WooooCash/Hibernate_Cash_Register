@@ -12,15 +12,15 @@ public class EmployeeDashboardPanel extends JPanel {
     private JButton createOrderButton;
     private JButton requestAssistanceButton;
 
-    public EmployeeDashboardPanel() {
-        this.setLayout(new GridLayout());
-
-        createOrderButton = new JButton("NEW ORDER");
-        requestAssistanceButton = new JButton("REQUEST ASSISTANCE");
-
-        this.add(createOrderButton);
-        this.add(requestAssistanceButton);
-    }
+//    public EmployeeDashboardPanel() {
+//        this.setLayout(new GridLayout());
+//
+//        createOrderButton = new JButton("NEW ORDER");
+//        requestAssistanceButton = new JButton("REQUEST ASSISTANCE");
+//
+//        this.add(createOrderButton);
+//        this.add(requestAssistanceButton);
+//    }
 
     public EmployeeDashboardPanel(MainFrame mainFrame) {
         this.setLayout(new GridLayout());
