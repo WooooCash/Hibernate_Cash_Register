@@ -5,7 +5,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.Array;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -19,67 +22,56 @@ public class OrderDashboard extends JFrame {
     private JButton addProductButton;
     private JList allProductsInOrder;
     private JLabel sumValueLabel;
-//    private DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
+    private JFormattedTextField inputForProductAmount;
+    private JLabel priceLabel;
+
 
     public OrderDashboard() {
-        String[] ar = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"};
-        ArrayList<ProductEntity> ar2 = new ArrayList<>(0);
-        ProductEntity p = new ProductEntity();
-        ProductEntity p2 = new ProductEntity();
-        p.setProductId(1);
-        p.setName("Cosik");
-        p.setUnitscale("kg");
-        p.setPrice(0.5);
-        p.setInstock(100);
-        p.setRequiresamount("Y");
-        p.setProductcategoryId(2);
-        p.setSuppliernip(500100300);
-        ar2.add(p);
-        p2.setProductId(1);
-        p2.setName("Bruh");
-        p2.setUnitscale("kg");
-        p2.setPrice(0.5);
-        p2.setInstock(100);
-        p2.setRequiresamount("Y");
-        p2.setProductcategoryId(2);
-        p2.setSuppliernip(500100300);
-        ar2.add(p2);
-//        ar2 = databaseEndpoint.getAllProducts();
-//        allProductsList.setListData(ar);
-        String [] namings = new String[ar2.size()];
-        for(int i =0 ; i < ar2.size(); ++i){
-            namings[i] = ar2.get(i).getName();
+//        it must be final so the taken type could be global
+        final String[] selectedWordsInLists = {null, null};
+        final int[] selectedIndexInLists = {-1, -1};
+        final ArrayList<ProductEntity>[] productList = new ArrayList[]{new ArrayList<>(0)};
+
+        ArrayList<ProductEntity> productOrigin = new ArrayList<ProductEntity>(0);
+        ArrayList<String> orderNamings = new ArrayList<String>(0);
+        ArrayList<Integer> productAmount = new ArrayList<Integer>(0);
+
+        ArrayList<ProductEntity> orderProducts = new ArrayList<ProductEntity>(0);
+
+//        here importing data for product
+        productOrigin.add(create(1, "Cosik", "kg",0.5, 100,"Y",2, 500100300));
+        productOrigin.add(create(2, "jakos", "lol",0.7, 200, "N",3, 120123123));
+
+        String [] namingsShowed = new String[productOrigin.size()];
+        for(int i =0 ; i < productOrigin.size(); ++i){
+            namingsShowed[i] = productOrigin.get(i).getName();
+            productList[0].add(productOrigin.get(i));
         }
-        allProductsList.setListData(namings);
-        ArrayList<String> order = new ArrayList<String>(0);
+        allProductsList.setListData(namingsShowed);
+
+
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.setContentPane(mainPanel);
         this.setTitle("Order Dashboard");
-
         searchProductButton.addActionListener(e -> {
-//            ArrayList<String> searchingList = new ArrayList<String>(0);
             ArrayList<String> searchingList = new ArrayList<>();
-
             String search = searchProductsField.getText();
+            productList[0].clear();
             if(search != null) {
-                for (int i = 0; i < ar2.size(); ++i) {
-                    if (ar2.get(i).getName().toLowerCase(Locale.ROOT).contains(search))
-                        searchingList.add(ar2.get(i).getName());
+                for (int i = 0; i < productOrigin.size(); ++i) {
+                    if (productOrigin.get(i).getName().toLowerCase(Locale.ROOT).contains(search)) {
+                        searchingList.add(productOrigin.get(i).getName());
+                        productList[0].add(productOrigin.get(i));
+                    }
                 }
                 allProductsList.setListData(searchingList.toArray());
             }
-            else
-                allProductsList.setListData(ar2.toArray());
-//            if(search != null) {
-//                for (String word : ar)
-//                    if (word.contains(search))
-//                        searchingList.add(word);
-                System.out.println(search);
-//            }
-
+            else {
+                allProductsList.setListData(productOrigin.toArray());
+                productList[0] = new ArrayList<>(productOrigin);
+            }
         });
 
-        System.out.println("something");
         this.pack();
         this.setLocationRelativeTo(null);
 
@@ -87,29 +79,102 @@ public class OrderDashboard extends JFrame {
         allProductsList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                System.out.println(allProductsList.toString());
+//                System.out.println(allProductsList.toString());
+                System.out.println(inputForProductAmount.getText());
                 if(allProductsList.getSelectedValue() != null) {
-                    String selected = allProductsList.getSelectedValue().toString();
-                    selectedProductLabel.setText(selected);
-//                    System.out.println(selected.getName());
+                    selectedWordsInLists[0] = allProductsList.getSelectedValue().toString();
+                    selectedWordsInLists[1] = null;
+                    selectedIndexInLists[0] = allProductsList.getSelectedIndex();
+                    selectedIndexInLists[1] = -1;
+                    allProductsInOrder.clearSelection();
+
+                    selectedProductLabel.setText(selectedWordsInLists[0]);
+                    priceLabel.setText(""+productList[0].get(selectedIndexInLists[0]).getPrice() + "zł");
+                    addProductButton.setText("Add Product");
+                    inputForProductAmount.setText("0");
+                    System.out.println(selectedWordsInLists[0]);
+//                    System.out.println(selectedWordsInLists.getName());
                 }
             }
         });
         addProductButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String selected = selectedProductLabel.getText();
-                System.out.println(selected);
-                if(!order.contains(selected)) {
-                    for (ProductEntity p : ar2)
-                        if (p.getName().contains(selected))
-                            order.add(selected);
+//                String selectedWordsInLists = selectedProductLabel.getText();
+//                System.out.println(selectedWordsInLists);
+                if(selectedWordsInLists[0] != null) {
+                    if (!orderNamings.contains(selectedWordsInLists[0])) {
+                        orderNamings.add(selectedWordsInLists[0]);
+                        orderProducts.add(productList[0].get(selectedIndexInLists[0]));
+                        productAmount.add(Integer.valueOf(inputForProductAmount.getText()));
+                    }
+                    String[] ord = orderNamings.toArray(new String[orderNamings.size()]);
+                    allProductsInOrder.setListData(ord);
+                    sumValueLabel.setText("0");
                 }
-                String[] ord = order.toArray(new String[order.size()]);
-                allProductsInOrder.setListData(ord);
-                sumValueLabel.setText("0");
+                if(selectedWordsInLists[1] != null ){
+                    if(orderNamings.size() != 0) {
+                        orderProducts.remove(selectedIndexInLists[1]);
+                        orderNamings.remove(selectedIndexInLists[1]);
+                        productAmount.remove(selectedIndexInLists[1]);
+                        String[] ord = orderNamings.toArray(new String[orderNamings.size()]);
+                        allProductsInOrder.setListData(ord);
+                    }
+                }
+            }
+        });
+        allProductsInOrder.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if(allProductsInOrder.getSelectedValue() != null) {
+                    selectedWordsInLists[1] = allProductsInOrder.getSelectedValue().toString();
+                    selectedWordsInLists[0] = null;
+                    selectedIndexInLists[1] = allProductsInOrder.getSelectedIndex();
+                    selectedIndexInLists[0] = -1;
+                    allProductsList.clearSelection();
+                    System.out.println(selectedWordsInLists[0] == null ? "yas1": "nay1");
+                    System.out.println(selectedWordsInLists[1] == null ? "yas2": "nay2");
+
+                    addProductButton.setText("Remove Product");
+                    priceLabel.setText(""+ orderProducts.get(selectedIndexInLists[1]).getPrice() + "zł");
+
+                    System.out.println(selectedWordsInLists);
+                    selectedProductLabel.setText(selectedWordsInLists[1]);
+                }
             }
         });
 
+        inputForProductAmount.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                super.keyTyped(e);
+                char c = e.getKeyChar();
+                if(!Character.isDigit(c))
+                    e.consume();
+                if(inputForProductAmount.getText().equals(""))
+                    inputForProductAmount.setText("0");
+            }
+        });
+        inputForProductAmount.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                System.out.println(evt);
+            }
+        });
+    }
+    //    private DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
+    public ProductEntity create(long id, String name, String unitScale, double Price, long instock,
+                                String requiresAmount, long ProductCategory, long NIP ){
+        ProductEntity pE = new ProductEntity();
+        pE.setProductId(id);
+        pE.setName(name);
+        pE.setUnitscale(unitScale);
+        pE.setPrice(Price);
+        pE.setInstock(instock);
+        pE.setRequiresamount(requiresAmount);
+        pE.setProductcategoryId(ProductCategory);
+        pE.setSuppliernip(NIP);
+        return pE;
     }
 }
+
