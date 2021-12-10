@@ -25,6 +25,8 @@ public class OrderDashboard extends JFrame {
     private JFormattedTextField inputForProductAmount;
     private JLabel priceLabel;
 
+    private JButton finaliseOrderButton;
+    private JButton addCouponButton;
 
     public OrderDashboard() {
 //        it must be final so the taken type could be global
@@ -159,6 +161,16 @@ public class OrderDashboard extends JFrame {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 System.out.println(evt);
+            }
+        });
+        addCouponButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JDialog dialog = new JDialog(OrderDashboard.this, "Coupon Code");
+                dialog.setContentPane(new CouponCode(dialog));
+                dialog.pack();
+                dialog.setLocationRelativeTo(null);
+                dialog.setVisible(true);
             }
         });
     }
