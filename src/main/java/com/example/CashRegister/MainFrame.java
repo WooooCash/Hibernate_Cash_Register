@@ -76,14 +76,19 @@ public class MainFrame extends JFrame {
             centerPanel.remove(0);
         System.out.println(status);
         if (status == 0) {centerPanel.add(new EmployeeDashboardPanel(this), BorderLayout.CENTER);} // create new panel for regular employee
-        else if (status == 1) {centerPanel.add(new ManagerDashboardPanel(), BorderLayout.CENTER);} // create new panel for manager
+        else if (status == 1) {centerPanel.add(new ManagerDashboardPanel(this), BorderLayout.CENTER);} // create new panel for manager
         updateComponent(centerPanel);
     }
 
     public void setAssistanceRequestPage() {
-        System.out.println("halo");
         centerPanel.remove(0);
         centerPanel.add(new AssistanceRequestPanel(this), BorderLayout.CENTER);
+        updateComponent(centerPanel);
+    }
+
+    public void setCheckRequestPanel() {
+        centerPanel.remove(0);
+        centerPanel.add(new AssistanceRequestReceiverPanel(this), BorderLayout.CENTER);
         updateComponent(centerPanel);
     }
 }
