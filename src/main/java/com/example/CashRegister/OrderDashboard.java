@@ -27,23 +27,23 @@ public class OrderDashboard extends JFrame {
 
     private JButton finaliseOrderButton;
     private JButton addCouponButton;
-
+    DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
     public OrderDashboard() {
 //        it must be final so the taken type could be global
         final String[] selectedWordsInLists = {null, null};
         final int[] selectedIndexInLists = {-1, -1};
         final ArrayList<ProductEntity>[] productList = new ArrayList[]{new ArrayList<>(0)};
 
-        ArrayList<ProductEntity> productOrigin = new ArrayList<ProductEntity>(0);
+        ArrayList<ProductEntity> productOrigin;
         ArrayList<String> orderNamings = new ArrayList<String>(0);
         ArrayList<Integer> productAmount = new ArrayList<Integer>(0);
 
         ArrayList<ProductEntity> orderProducts = new ArrayList<ProductEntity>(0);
 
 //        here importing data for product
-        productOrigin.add(create(1, "Cosik", "kg",0.5, 100,"Y",2, 500100300));
-        productOrigin.add(create(2, "jakos", "lol",0.7, 200, "N",3, 120123123));
-
+//        productOrigin.add(create(1, "Cosik", "kg",0.5, 100,"Y",2, 500100300));
+//        productOrigin.add(create(2, "jakos", "lol",0.7, 200, "N",3, 120123123));
+        productOrigin = new ArrayList<>(databaseEndpoint.getAllProducts());
         String [] namingsShowed = new String[productOrigin.size()];
         for(int i =0 ; i < productOrigin.size(); ++i){
             namingsShowed[i] = productOrigin.get(i).getName();
@@ -171,6 +171,26 @@ public class OrderDashboard extends JFrame {
                 dialog.pack();
                 dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
+            }
+        });
+        finaliseOrderButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object[] options = {"Send", "Cancel"};
+                int result = JOptionPane.showOptionDialog(null,
+                        "Are you sure you want to finalize Order?",
+                        "Request Confirmation",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        options,
+                        options[1]);
+
+                if (result == 0) {
+
+                    System.exit(1);
+                }
+//                    app.sendAssistanceRequest(textArea.getText());
             }
         });
     }

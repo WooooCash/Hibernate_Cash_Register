@@ -9,6 +9,7 @@ import org.hibernate.query.Query;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -63,13 +64,15 @@ public class DatabaseEndpoint extends Thread {
         //System.out.println(query);
         query.setParameter("name", name)
                 .setParameter("password", password);
-        List lista = query.list();
-        Object[] dane = (Object[]) lista.get(0);
+        List list = query.list();
+        Object[] input = null;
+        if(!list.isEmpty())
+            input = (Object[]) list.get(0);
 
         session.close();
 
 
-        return new int[] {!lista.isEmpty() ? 1 : 0, !lista.isEmpty() ? ((Long)dane[0]).intValue() : -1};
+        return new int[] {!list.isEmpty() ? 1 : 0, !list.isEmpty() ? ((Long)input[0]).intValue() : -1};
     }
 
     public void saveNewAssistanceRequest(int empId, String description) {
@@ -91,7 +94,14 @@ public class DatabaseEndpoint extends Thread {
         session.getTransaction().commit();
         session.close();
     }
-
+    public ArrayList<ProductEntity> getAllProducts(){
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        String sql = "from ProductEntity";
+        Query query = session.createQuery(sql);
+        ArrayList<ProductEntity> listOfProducts = (ArrayList<ProductEntity>) query.list();
+        return listOfProducts;
+    }
     public static void closeConnection(){
         factory.close();
         System.out.println("closing works");
