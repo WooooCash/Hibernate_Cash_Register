@@ -10,10 +10,7 @@ import org.hibernate.query.Query;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class DatabaseEndpoint extends Thread {
@@ -75,6 +72,28 @@ public class DatabaseEndpoint extends Thread {
 
 
         return new int[] {!list.isEmpty() ? 1 : 0, !list.isEmpty() ? ((Long)input[0]).intValue() : -1};
+    }
+
+    public ArrayList<Object[]> getRankedEmployeeList() {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        String sql = "select e.employeeId, e.name, nvl(sum(o.ordertotalprice),0) as sales " +
+                "from EmployeeEntity e left join OrderEntity o ON e.employeeId = o.employeeId " +
+                "group by e.employeeId, e.name " +
+                "order by sales desc ";
+
+        Query query = session.createQuery(sql);
+        List list = query.list();
+
+        ArrayList<Object[]> employeeRankingList = new ArrayList<>();
+        for (Object o : list){
+            Object[] input = (Object[])o;
+            employeeRankingList.add(new Object[] {input[1], input[2]});
+        }
+
+        session.close();
+
+        return employeeRankingList;
     }
 
     public void saveNewAssistanceRequest(int empId, String description) {

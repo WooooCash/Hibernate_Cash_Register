@@ -30,7 +30,7 @@ public class ManagerDashboardPanel extends JPanel {
                 mainFrame.setCheckRequestPanel();
             }
         });
-        profitSummaryButton = new JButton("PROFIT SUMMARY");
+        profitSummaryButton = new JButton("SALES SUMMARY");
         profitSummaryButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

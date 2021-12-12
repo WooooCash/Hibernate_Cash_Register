@@ -29,15 +29,15 @@ public class InvoiceEntity {
         this.nip = nip;
     }
 
-    private long netprice;
+    private float netprice;
 
     @javax.persistence.Basic
     @javax.persistence.Column(name = "NETPRICE", nullable = false, precision = 2)
-    public long getNetprice() {
+    public float getNetprice() {
         return netprice;
     }
 
-    public void setNetprice(long netprice) {
+    public void setNetprice(float netprice) {
         this.netprice = netprice;
     }
 
@@ -113,7 +113,7 @@ public class InvoiceEntity {
         long temp;
         result = (int) (invoiceId ^ (invoiceId >>> 32));
         result = 31 * result + (int) (nip ^ (nip >>> 32));
-        result = 31 * result + (int) (netprice ^ (netprice >>> 32));
+        result = Float.floatToIntBits(netprice);
         temp = Double.doubleToLongBits(taxamount);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (firstname != null ? firstname.hashCode() : 0);
