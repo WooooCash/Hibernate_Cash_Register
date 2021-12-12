@@ -32,6 +32,7 @@ public class OrderDashboard extends JFrame {
     private long couponID = -1;
     private JButton finaliseOrderButton;
     private JButton addCouponButton;
+    private JLabel unitscaleLabel;
     DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
     private ArrayList<ProductEntity> orderProducts;
     private ArrayList<Integer> productAmount;
@@ -98,6 +99,7 @@ public class OrderDashboard extends JFrame {
                     priceLabel.setText(""+productList[0].get( selectedIndexInLists[0] ).getPrice() + "zł");
                     addProductButton.setText("Add Product");
                     inputForProductAmount.setText("1");
+                    unitscaleLabel.setText( "" + productList[0].get( selectedIndexInLists[0] ).getUnitscale() );
                     inputForProductAmount.setEditable(true);
 
                 }
@@ -153,6 +155,8 @@ public class OrderDashboard extends JFrame {
                     addProductButton.setText("Remove Product");
                     inputForProductAmount.setText( String.valueOf( productAmount.get( selectedIndexInLists[1] ) ) );
                     inputForProductAmount.setEditable(false);
+                    unitscaleLabel.setText( orderProducts.get( selectedIndexInLists[1] ).getUnitscale() );
+
 
                     priceLabel.setText(""+ orderProducts.get(selectedIndexInLists[1]).getPrice() + "zł");
 
