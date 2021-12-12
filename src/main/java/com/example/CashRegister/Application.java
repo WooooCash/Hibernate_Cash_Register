@@ -61,4 +61,7 @@ public class Application {
         System.out.println("Description: " + description);
         mainFrame.setDashboardPage(0);
     }
+    public int getCurrentUserId(){
+        return currentUserId;
+    }
 }

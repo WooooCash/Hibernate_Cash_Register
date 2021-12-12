@@ -12,7 +12,7 @@ public class MainFrame extends JFrame {
     private JFrame frame;
     private JPanel leftPanel;
     private JPanel centerPanel;
-
+    private JFrame Productframe;
     public MainFrame() {
 
 
@@ -101,8 +101,11 @@ public class MainFrame extends JFrame {
 
     public void createOrder() {
         System.out.println("weszlo");
-        JFrame frame = new OrderDashboard();
-        frame.setVisible(true);
+        Productframe = new OrderDashboard(this);
+        Productframe.setVisible(true);
+    }
+    public void destroyOrder(){
+        Productframe.dispose();
     }
 
     public void setProfitSummaryPage() {

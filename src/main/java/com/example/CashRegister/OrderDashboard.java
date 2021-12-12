@@ -9,6 +9,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.Array;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -27,23 +30,22 @@ public class OrderDashboard extends JFrame {
 
     private JButton finaliseOrderButton;
     private JButton addCouponButton;
-
-    public OrderDashboard() {
+    DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
+    public OrderDashboard(MainFrame mainFrame) {
 //        it must be final so the taken type could be global
         final String[] selectedWordsInLists = {null, null};
         final int[] selectedIndexInLists = {-1, -1};
         final ArrayList<ProductEntity>[] productList = new ArrayList[]{new ArrayList<>(0)};
 
-        ArrayList<ProductEntity> productOrigin = new ArrayList<ProductEntity>(0);
+        ArrayList<ProductEntity> productOrigin = databaseEndpoint.getAllProducts();
         ArrayList<String> orderNamings = new ArrayList<String>(0);
         ArrayList<Integer> productAmount = new ArrayList<Integer>(0);
 
         ArrayList<ProductEntity> orderProducts = new ArrayList<ProductEntity>(0);
 
 //        here importing data for product
-        productOrigin.add(create(1, "Cosik", "kg",0.5, 100,"Y",2, 500100300));
-        productOrigin.add(create(2, "jakos", "lol",0.7, 200, "N",3, 120123123));
-
+//        productOrigin.add(create(1, "Cosik", "kg",0.5, 100,"Y",2, 500100300));
+//        productOrigin.add(create(2, "jakos", "lol",0.7, 200, "N",3, 120123123));
         String [] namingsShowed = new String[productOrigin.size()];
         for(int i =0 ; i < productOrigin.size(); ++i){
             namingsShowed[i] = productOrigin.get(i).getName();
@@ -81,9 +83,7 @@ public class OrderDashboard extends JFrame {
         allProductsList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-//                System.out.println(allProductsList.toString());
-                System.out.println(inputForProductAmount.getText());
-                if(allProductsList.getSelectedValue() != null) {
+                if( allProductsList.getSelectedValue() != null ) {
                     selectedWordsInLists[0] = allProductsList.getSelectedValue().toString();
                     selectedWordsInLists[1] = null;
                     selectedIndexInLists[0] = allProductsList.getSelectedIndex();
@@ -91,28 +91,38 @@ public class OrderDashboard extends JFrame {
                     allProductsInOrder.clearSelection();
 
                     selectedProductLabel.setText(selectedWordsInLists[0]);
-                    priceLabel.setText(""+productList[0].get(selectedIndexInLists[0]).getPrice() + "zł");
+                    priceLabel.setText(""+productList[0].get( selectedIndexInLists[0] ).getPrice() + "zł");
                     addProductButton.setText("Add Product");
-                    inputForProductAmount.setText("0");
-                    System.out.println(selectedWordsInLists[0]);
-//                    System.out.println(selectedWordsInLists.getName());
+                    inputForProductAmount.setText("1");
+                    inputForProductAmount.setEditable(true);
+
                 }
             }
         });
         addProductButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                String selectedWordsInLists = selectedProductLabel.getText();
-//                System.out.println(selectedWordsInLists);
+                String productAmountValue = inputForProductAmount.getText();
                 if(selectedWordsInLists[0] != null) {
-                    if (!orderNamings.contains(selectedWordsInLists[0])) {
-                        orderNamings.add(selectedWordsInLists[0]);
-                        orderProducts.add(productList[0].get(selectedIndexInLists[0]));
-                        productAmount.add(Integer.valueOf(inputForProductAmount.getText()));
+                    if ( !orderNamings.contains( selectedWordsInLists[0] ) ) {
+                        orderNamings.add( selectedWordsInLists[0] );
+                        orderProducts.add( productList[0].get( selectedIndexInLists[0] ) );
+                        productAmount.add(
+                            productAmountValueNullOrZero(productAmountValue) ? 1 :
+                                Integer.parseInt( productAmountValue ) );
                     }
-                    String[] ord = orderNamings.toArray(new String[orderNamings.size()]);
+                    else{
+                        for( int i = 0 ; i < orderNamings.size() ; ++i ){
+                            if( orderNamings.get(i).equals( selectedWordsInLists[0] ) ) {
+                                productAmount.set( i, productAmount.get( i ) +
+                                        ( productAmountValueNullOrZero( productAmountValue ) ?
+                                                1 : Integer.parseInt( productAmountValue ) ) );
+                            }
+                        }
+                    }
+                    String[] ord = orderNamings.toArray(new String[0]);
+                    sumValueLabel.setText( "" + computeOrderSum( orderProducts, productAmount ) + "zł");
                     allProductsInOrder.setListData(ord);
-                    sumValueLabel.setText("0");
                 }
                 if(selectedWordsInLists[1] != null ){
                     if(orderNamings.size() != 0) {
@@ -120,6 +130,7 @@ public class OrderDashboard extends JFrame {
                         orderNamings.remove(selectedIndexInLists[1]);
                         productAmount.remove(selectedIndexInLists[1]);
                         String[] ord = orderNamings.toArray(new String[orderNamings.size()]);
+                        sumValueLabel.setText( "" + computeOrderSum( orderProducts, productAmount ) + "zł");
                         allProductsInOrder.setListData(ord);
                     }
                 }
@@ -134,13 +145,13 @@ public class OrderDashboard extends JFrame {
                     selectedIndexInLists[1] = allProductsInOrder.getSelectedIndex();
                     selectedIndexInLists[0] = -1;
                     allProductsList.clearSelection();
-                    System.out.println(selectedWordsInLists[0] == null ? "yas1": "nay1");
-                    System.out.println(selectedWordsInLists[1] == null ? "yas2": "nay2");
 
                     addProductButton.setText("Remove Product");
+                    inputForProductAmount.setText( String.valueOf( productAmount.get( selectedIndexInLists[1] ) ) );
+                    inputForProductAmount.setEditable(false);
+
                     priceLabel.setText(""+ orderProducts.get(selectedIndexInLists[1]).getPrice() + "zł");
 
-                    System.out.println(selectedWordsInLists);
                     selectedProductLabel.setText(selectedWordsInLists[1]);
                 }
             }
@@ -151,18 +162,12 @@ public class OrderDashboard extends JFrame {
             public void keyTyped(KeyEvent e) {
                 super.keyTyped(e);
                 char c = e.getKeyChar();
+//                check if number. If not, consume it :O
                 if(!Character.isDigit(c))
                     e.consume();
-                if(inputForProductAmount.getText().equals(""))
-                    inputForProductAmount.setText("0");
             }
         });
-        inputForProductAmount.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                System.out.println(evt);
-            }
-        });
+
         addCouponButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -171,6 +176,45 @@ public class OrderDashboard extends JFrame {
                 dialog.pack();
                 dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
+            }
+        });
+        finaliseOrderButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(orderProducts.size() == 0) {
+                    JOptionPane.showMessageDialog(null, "No products in Order. Add something");
+                    return;
+                }
+                Object[] options = {"Send", "Cancel"};
+                int result = JOptionPane.showOptionDialog(null,
+                        "Are you sure you want to finalize Order?",
+                        "Request Confirmation",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        options,
+                        options[1]);
+
+                if (result == 0) {
+                    long id_of_employee = (long) app.getApp().getCurrentUserId();
+                    //                    id 404, because if it's default
+                    long order_id = databaseEndpoint.addOrderEntity(
+                            (double) computeOrderSum(orderProducts, productAmount),
+                            1,
+                            "gotowka",
+                            404,
+                            404,
+                            404,
+                            id_of_employee
+                    );
+                    for (int i = 0; i < orderProducts.size(); ++i)
+                        databaseEndpoint.addProductOrderEntity(
+                                productAmount.get(i),
+                                orderProducts.get(i).getProductId(),
+                                order_id
+                        );
+                    mainFrame.destroyOrder();
+                }
             }
         });
     }
@@ -187,6 +231,18 @@ public class OrderDashboard extends JFrame {
         pE.setProductcategoryId(ProductCategory);
         pE.setSuppliernip(NIP);
         return pE;
+    }
+    private boolean productAmountValueNullOrZero(String productAmountValue){
+        if( productAmountValue == null || productAmountValue.equals("") || Integer.parseInt( productAmountValue ) == 0 )
+            return true;
+        return false;
+    }
+    private float computeOrderSum(ArrayList<ProductEntity> productListInOrder, ArrayList<Integer> productAmount){
+        float sum = 0.0f;
+        for(int i = 0 ; i < productListInOrder.size() ; ++i)
+            sum += (float) ( productListInOrder.get(i).getPrice() * Float.valueOf( String.valueOf(productAmount.get(i))));
+        sum = BigDecimal.valueOf(sum).setScale(2, RoundingMode.HALF_UP).floatValue();
+        return sum;
     }
 }
 
