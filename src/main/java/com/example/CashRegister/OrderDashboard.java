@@ -27,7 +27,8 @@ public class OrderDashboard extends JFrame {
     private JLabel sumValueLabel;
     private JFormattedTextField inputForProductAmount;
     private JLabel priceLabel;
-
+    private double percentDiscount = BigDecimal.valueOf(0).setScale(2, RoundingMode.HALF_UP).floatValue();
+    private double permaDiscount = BigDecimal.valueOf(0).setScale(2, RoundingMode.HALF_UP).floatValue();
     private JButton finaliseOrderButton;
     private JButton addCouponButton;
     DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
@@ -171,11 +172,20 @@ public class OrderDashboard extends JFrame {
         addCouponButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JDialog dialog = new JDialog(OrderDashboard.this, "Coupon Code");
-                dialog.setContentPane(new CouponCode(dialog));
-                dialog.pack();
-                dialog.setLocationRelativeTo(null);
-                dialog.setVisible(true);
+                if(percentDiscount <= 0 || percentDiscount <= 0) {
+                    JDialog dialog = new JDialog(OrderDashboard.this, "Coupon Code");
+                    dialog.setContentPane(new CouponCode(dialog, OrderDashboard.this));
+                    dialog.pack();
+                    dialog.setLocationRelativeTo(null);
+                    dialog.setVisible(true);
+                    addCouponButton.setText("Remove coupon");
+                }
+                else {
+                    percentDiscount = BigDecimal.valueOf(0).setScale(2, RoundingMode.HALF_UP).floatValue();
+                    permaDiscount = BigDecimal.valueOf(0).setScale(2, RoundingMode.HALF_UP).floatValue();
+                    inputForProductAmount.setText( String.valueOf( productAmount.get( selectedIndexInLists[1] ) ) );
+                    addCouponButton.setText("Add coupon");
+                }
             }
         });
         finaliseOrderButton.addActionListener(new ActionListener() {
@@ -240,9 +250,30 @@ public class OrderDashboard extends JFrame {
     private float computeOrderSum(ArrayList<ProductEntity> productListInOrder, ArrayList<Integer> productAmount){
         float sum = 0.0f;
         for(int i = 0 ; i < productListInOrder.size() ; ++i)
-            sum += (float) ( productListInOrder.get(i).getPrice() * Float.valueOf( String.valueOf(productAmount.get(i))));
+            sum += (float) ( productListInOrder.get(i).getPrice()
+                    * Float.valueOf( String.valueOf( productAmount.get( i ) ) ) );
+        System.out.println("\n\n\n\n\nlollll" + sum);
+        sum = sum * (float)( (100.0f - percentDiscount) / 100.0f );
+        System.out.println(sum);
+        sum = sum - (float)permaDiscount;
+        System.out.println(sum);
+        System.out.println(permaDiscount);
+        System.out.println(percentDiscount);
         sum = BigDecimal.valueOf(sum).setScale(2, RoundingMode.HALF_UP).floatValue();
         return sum;
+    }
+    public void setCoupon(String couponTextFromDatabase){
+        String[] output = couponTextFromDatabase.split(" ");
+        if( output[0].equals( "procent" ) ) {
+            percentDiscount = Double.parseDouble(output[1]);
+            percentDiscount = BigDecimal.valueOf(percentDiscount).setScale(2, RoundingMode.HALF_UP).floatValue();
+            System.out.println("procencik:" + percentDiscount);
+        }
+        else {
+            permaDiscount = Double.parseDouble(output[1]);
+            permaDiscount = BigDecimal.valueOf(permaDiscount).setScale(2, RoundingMode.HALF_UP).floatValue();
+            System.out.println("staloliczbowa:" + permaDiscount);
+        }
     }
 }
 

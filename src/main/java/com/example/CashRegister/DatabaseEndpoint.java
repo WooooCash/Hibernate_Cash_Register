@@ -174,6 +174,26 @@ public class DatabaseEndpoint extends Thread {
         session.close();
         return p;
     }
+    public String getCouponEntity(long couponCode){
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        String sql = "from CouponEntity CE where :id=CE.couponcode";
+        Query query = session.createQuery(sql);
+        query.setParameter("id", couponCode);
+        List result = query.list();
+        CouponEntity coupon;
+        String returnStatement;
+        if( !result.isEmpty() ) {
+            coupon = (CouponEntity) query.list().get(0);
+            returnStatement = "" + (coupon.getTypeofcoupon().equals("P") ? "procent " : "liczba ") +
+                    coupon.getCouponamount();
+        }
+        else{
+            returnStatement = "";
+        }
+        session.close();
+        return returnStatement;
+    }
 //
     public static void closeConnection(){
         factory.close();
