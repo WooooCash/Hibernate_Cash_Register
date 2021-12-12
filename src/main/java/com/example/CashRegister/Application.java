@@ -43,6 +43,7 @@ public class Application {
 //        if ( username.equals(realUser) && password.equals(realPass) ) {
             System.out.println("Successfully logged in as: " + username);
             currentUserId = loginInfo[1];
+           System.out.println("Twoj stary ---> " + currentUserId);
 //             #TODO uncomment for database connection
             int isEmployeeManager = databaseEndpoint.basicEmployeeReturn0ManagerReturn1(username);
             mainFrame.loggedIn(username, isEmployeeManager);// status indicates if succesfully logged in and what privildedges are granted to the user
@@ -60,5 +61,9 @@ public class Application {
         databaseEndpoint.saveNewAssistanceRequest(currentUserId, description);
         System.out.println("Description: " + description);
         mainFrame.setDashboardPage(0);
+    }
+    public int getCurrentUserId(){
+        System.out.println("Twoja mattttt ===> "+currentUserId);
+        return currentUserId;
     }
 }

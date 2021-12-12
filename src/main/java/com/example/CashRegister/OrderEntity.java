@@ -1,13 +1,16 @@
 package com.example.CashRegister;
 
 import javax.persistence.Entity;
+import javax.persistence.GenerationType;
+import java.sql.Date;
 import java.sql.Time;
 
 @Entity
-@javax.persistence.Table(name = "Order", schema = "SBD_ST_PS11_4", catalog = "")
+@javax.persistence.Table(name = "\"Order\"", schema = "SBD_ST_PS11_4", catalog = "")
 public class OrderEntity {
     private long orderId;
 
+    @javax.persistence.GeneratedValue(strategy = GenerationType.AUTO)
     @javax.persistence.Id
     @javax.persistence.Column(name = "ORDER_ID", nullable = false, precision = 0)
     public long getOrderId() {
@@ -18,15 +21,15 @@ public class OrderEntity {
         this.orderId = orderId;
     }
 
-    private Time orderdate;
+    private Date orderdate;
 
     @javax.persistence.Basic
     @javax.persistence.Column(name = "ORDERDATE", nullable = false)
-    public Time getOrderdate() {
+    public Date getOrderdate() {
         return orderdate;
     }
 
-    public void setOrderdate(Time orderdate) {
+    public void setOrderdate(Date orderdate) {
         this.orderdate = orderdate;
     }
 
@@ -150,5 +153,8 @@ public class OrderEntity {
         result = 31 * result + (int) (couponId ^ (couponId >>> 32));
         result = 31 * result + (int) (employeeId ^ (employeeId >>> 32));
         return result;
+    }
+
+    public void setOrderdate(java.util.Date date) {
     }
 }

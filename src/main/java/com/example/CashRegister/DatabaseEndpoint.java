@@ -4,6 +4,7 @@ package com.example.CashRegister;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.criterion.Order;
 import org.hibernate.query.Query;
 
 import java.sql.Time;
@@ -28,6 +29,7 @@ public class DatabaseEndpoint extends Thread {
                 .addAnnotatedClass(EmployeeEntity.class)
                 .addAnnotatedClass(InvoiceEntity.class)
                 .addAnnotatedClass(MembershipaccountEntity.class)
+                .addAnnotatedClass(OrderEntity.class)
                 .addAnnotatedClass(ProductcategoryEntity.class)
                 .addAnnotatedClass(ProductcategoryEntity.class)
                 .addAnnotatedClass(ProductEntity.class)
@@ -100,8 +102,79 @@ public class DatabaseEndpoint extends Thread {
         String sql = "from ProductEntity";
         Query query = session.createQuery(sql);
         ArrayList<ProductEntity> listOfProducts = (ArrayList<ProductEntity>) query.list();
+        session.close();
         return listOfProducts;
     }
+    public void addProductOrderEntity(long productamount,
+                                      long productId,
+                                      long orderid){
+//       long productamount, dostajemy
+//      long taxcategoryname, wyciagamy
+//      long taxprice, dostajemy, wyciagamy i obliczamy
+//      double priceforproduct, wyciagamy
+//      long productId, dostajemy
+//      long orderid dostajemy
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        String sql = "select TC.taxcategoryId, TC.percentagetax, P.price " +
+                "from ProductEntity P, ProductcategoryEntity PC, TaxcategoryEntity TC " +
+                "where P.productId=:id " +
+                "and PC.productcategoryId=P.productcategoryId " +
+                "and PC.taxcategoryId=TC.taxcategoryId";
+        Query query = session.createQuery(sql);
+        query.setParameter("id", productId);
+        Object [] listedParameters = (Object[])query.list().get(0);
+
+        long taxId = (long) listedParameters[0];
+        float taxPercentageTax = (float) listedParameters[1];
+        double price = (double) listedParameters[2] * productamount;
+        double taxprice = price * productamount * taxPercentageTax;
+
+        ProductorderEntity ProductOrder = new ProductorderEntity();
+        ProductOrder.setProductamount(productamount);
+        ProductOrder.setTaxcategoryname(taxId);
+        ProductOrder.setTaxprice(taxprice);
+        ProductOrder.setPriceforproduct(price);
+        ProductOrder.setProductId(productId);
+        ProductOrder.setOrderId(orderid);
+
+        session.save(ProductOrder);
+
+        //Commit the transaction
+        session.getTransaction().commit();
+
+        System.out.println("Added product to order. hoohee");
+        session.close();
+    }
+
+    public long addOrderEntity(double totalPrice,
+                               long cashRegisterNumber,
+                               String transactionType,
+                               long membershipCardId,
+                               long invoiceId,
+                               long couponId,
+                               long employeeId){
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+
+        OrderEntity Order = new OrderEntity();
+        Order.setOrderdate(new java.sql.Date(new Date().getTime()));
+        Order.setOrdertotalprice(totalPrice);
+        Order.setCashregisternumber(cashRegisterNumber);
+        Order.setTransactiontype(transactionType);
+        Order.setMembershipId(membershipCardId);
+        Order.setInvoiceId(invoiceId);
+        Order.setCouponId(couponId);
+        Order.setEmployeeId(employeeId);
+        long p = (long) session.save(Order);
+        //Commit the transaction
+        session.getTransaction().commit();
+
+        System.out.println("Added order. hoohee");
+        session.close();
+        return p;
+    }
+//
     public static void closeConnection(){
         factory.close();
         System.out.println("closing works");
