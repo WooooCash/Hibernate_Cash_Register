@@ -1,7 +1,6 @@
 package com.example.CashRegister;
 
-import javax.persistence.Entity;
-import javax.persistence.GenerationType;
+import javax.persistence.*;
 import java.sql.Date;
 import java.sql.Time;
 

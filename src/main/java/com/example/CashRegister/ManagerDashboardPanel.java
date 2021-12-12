@@ -11,6 +11,7 @@ public class ManagerDashboardPanel extends JPanel {
 
     private JButton createOrderButton;
     private JButton checkAssistanceRequestsButton;
+    private JButton profitSummaryButton;
 
     public ManagerDashboardPanel(MainFrame mainFrame) {
         this.setLayout(new GridLayout());
@@ -29,9 +30,17 @@ public class ManagerDashboardPanel extends JPanel {
                 mainFrame.setCheckRequestPanel();
             }
         });
+        profitSummaryButton = new JButton("SALES SUMMARY");
+        profitSummaryButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainFrame.setProfitSummaryPage();
+            }
+        });
 
         this.add(createOrderButton);
         this.add(checkAssistanceRequestsButton);
+        this.add(profitSummaryButton);
     }
 
 }
