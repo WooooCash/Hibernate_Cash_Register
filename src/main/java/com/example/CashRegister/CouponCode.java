@@ -39,6 +39,7 @@ public class CouponCode extends Container {
                 else {
                     frame.setCoupon(outputFromDatabase);
                     JOptionPane.showMessageDialog(null, "Coupon applied :D");
+                    frame.actualizeOverallSum();
                 }
                 dialog.dispose();
             }

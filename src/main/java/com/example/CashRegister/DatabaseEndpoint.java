@@ -186,7 +186,7 @@ public class DatabaseEndpoint extends Thread {
         if( !result.isEmpty() ) {
             coupon = (CouponEntity) query.list().get(0);
             returnStatement = "" + (coupon.getTypeofcoupon().equals("P") ? "procent " : "liczba ") +
-                    coupon.getCouponamount();
+                    coupon.getCouponamount() + " " + coupon.getCouponId();
         }
         else{
             returnStatement = "";
