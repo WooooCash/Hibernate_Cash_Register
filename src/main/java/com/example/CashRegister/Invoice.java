@@ -8,21 +8,24 @@ public class Invoice extends Container {
         super();
         setLayout(new GridLayout(0, 1));
         JLabel niplabel = new JLabel("NIP: ");
-        JTextField niptext = new JTextField(10);
-        JLabel nameLabel = new JLabel("Name: ");
-        JTextField nameText = new JTextField(10);
-        JLabel addressLabel = new JLabel("Address: ");
-        JTextField addressText = new JTextField(10);
         add(niplabel);
+        JTextField niptext = new JTextField(10);
         add(niptext);
+        JLabel nameLabel = new JLabel("Name: ");
         add(nameLabel);
+        JTextField nameText = new JTextField(10);
         add(nameText);
+        JLabel addressLabel = new JLabel("Address: ");
         add(addressLabel);
+        JTextField addressText = new JTextField(10);
         add(addressText);
         JButton okButton = new JButton("OK");
+        add(okButton);
         okButton.addActionListener(e -> {
+            System.out.println("NIP: " + niptext.getText());
+            System.out.println("Name: " + nameText.getText());
+            System.out.println("Address: " + addressText.getText());
             dialog.dispose();
         });
-        add(okButton);
     }
 }
