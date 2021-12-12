@@ -219,7 +219,7 @@ public class OrderDashboard extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JDialog dialog = new JDialog(OrderDashboard.this, "Invoice");
-                dialog.setContentPane(new Invoice(dialog));
+                dialog.setContentPane(new Invoice(dialog, OrderDashboard.this));
                 dialog.pack();
                 dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);

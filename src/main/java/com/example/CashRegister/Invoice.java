@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Invoice extends Container {
-    public Invoice(JDialog dialog) {
+    public Invoice(JDialog dialog, OrderDashboard dashboard) {
         super();
         setLayout(new GridLayout(0, 1));
         JLabel niplabel = new JLabel("NIP: ");
@@ -25,6 +25,12 @@ public class Invoice extends Container {
             System.out.println("NIP: " + niptext.getText());
             System.out.println("Name: " + nameText.getText());
             System.out.println("Address: " + addressText.getText());
+            DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
+            if (niptext.getText().equals("") || nameText.getText().equals("") || addressText.getText().equals("")) {
+                JOptionPane.showMessageDialog(dialog, "Please fill in all fields", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             dialog.dispose();
         });
     }
