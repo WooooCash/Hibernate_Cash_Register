@@ -61,10 +61,10 @@ public class DatabaseEndpoint extends Thread {
     public static int[] login(String name, String password){
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        String sql = "select e.employeeId, e.gender from EmployeeEntity e where e.name=:name and e.password=:password";
+        String sql = "select e.employeeId, e.gender from EmployeeEntity e where lower(e.name)=:name and e.password=:password";
         Query query = session.createQuery(sql);
         //System.out.println(query);
-        query.setParameter("name", name)
+        query.setParameter("name", name.toLowerCase( Locale.ROOT ) )
                 .setParameter("password", password);
         List list = query.list();
         Object[] input = null;
