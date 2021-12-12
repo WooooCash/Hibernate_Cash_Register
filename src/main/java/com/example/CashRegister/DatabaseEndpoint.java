@@ -61,10 +61,10 @@ public class DatabaseEndpoint extends Thread {
     public static int[] login(String name, String password){
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        String sql = "select e.employeeId, e.gender from EmployeeEntity e where e.name=:name and e.password=:password";
+        String sql = "select e.employeeId, e.gender from EmployeeEntity e where lower(e.name)=:name and e.password=:password";
         Query query = session.createQuery(sql);
         //System.out.println(query);
-        query.setParameter("name", name)
+        query.setParameter("name", name.toLowerCase( Locale.ROOT ) )
                 .setParameter("password", password);
         List list = query.list();
         Object[] input = null;
@@ -173,6 +173,26 @@ public class DatabaseEndpoint extends Thread {
         System.out.println("Added order. hoohee");
         session.close();
         return p;
+    }
+    public String getCouponEntity(long couponCode){
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        String sql = "from CouponEntity CE where :id=CE.couponcode";
+        Query query = session.createQuery(sql);
+        query.setParameter("id", couponCode);
+        List result = query.list();
+        CouponEntity coupon;
+        String returnStatement;
+        if( !result.isEmpty() ) {
+            coupon = (CouponEntity) query.list().get(0);
+            returnStatement = "" + (coupon.getTypeofcoupon().equals("P") ? "procent " : "liczba ") +
+                    coupon.getCouponamount() + " " + coupon.getCouponId();
+        }
+        else{
+            returnStatement = "";
+        }
+        session.close();
+        return returnStatement;
     }
 //
     public static void closeConnection(){
