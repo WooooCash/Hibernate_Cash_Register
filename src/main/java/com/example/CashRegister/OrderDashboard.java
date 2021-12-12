@@ -7,9 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -27,10 +24,16 @@ public class OrderDashboard extends JFrame {
     private JLabel sumValueLabel;
     private JFormattedTextField inputForProductAmount;
     private JLabel priceLabel;
-
+    private double percentDiscount = BigDecimal.valueOf(0).setScale(2, RoundingMode.HALF_UP).floatValue();
+    private double permaDiscount = BigDecimal.valueOf(0).setScale(2, RoundingMode.HALF_UP).floatValue();
+    private long couponID = -1;
     private JButton finaliseOrderButton;
     private JButton addCouponButton;
+    private JLabel unitscaleLabel;
+    private JButton addInvoiceButton;
     DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
+    private ArrayList<ProductEntity> orderProducts;
+    private ArrayList<Integer> productAmount;
     public OrderDashboard(MainFrame mainFrame) {
 //        it must be final so the taken type could be global
         final String[] selectedWordsInLists = {null, null};
@@ -39,9 +42,9 @@ public class OrderDashboard extends JFrame {
 
         ArrayList<ProductEntity> productOrigin = databaseEndpoint.getAllProducts();
         ArrayList<String> orderNamings = new ArrayList<String>(0);
-        ArrayList<Integer> productAmount = new ArrayList<Integer>(0);
+        productAmount = new ArrayList<Integer>(0);
 
-        ArrayList<ProductEntity> orderProducts = new ArrayList<ProductEntity>(0);
+        orderProducts = new ArrayList<ProductEntity>(0);
 
 //        here importing data for product
 //        productOrigin.add(create(1, "Cosik", "kg",0.5, 100,"Y",2, 500100300));
@@ -94,6 +97,7 @@ public class OrderDashboard extends JFrame {
                     priceLabel.setText(""+productList[0].get( selectedIndexInLists[0] ).getPrice() + "zł");
                     addProductButton.setText("Add Product");
                     inputForProductAmount.setText("1");
+                    unitscaleLabel.setText( "" + productList[0].get( selectedIndexInLists[0] ).getUnitscale() );
                     inputForProductAmount.setEditable(true);
 
                 }
@@ -149,6 +153,8 @@ public class OrderDashboard extends JFrame {
                     addProductButton.setText("Remove Product");
                     inputForProductAmount.setText( String.valueOf( productAmount.get( selectedIndexInLists[1] ) ) );
                     inputForProductAmount.setEditable(false);
+                    unitscaleLabel.setText( orderProducts.get( selectedIndexInLists[1] ).getUnitscale() );
+
 
                     priceLabel.setText(""+ orderProducts.get(selectedIndexInLists[1]).getPrice() + "zł");
 
@@ -171,11 +177,20 @@ public class OrderDashboard extends JFrame {
         addCouponButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JDialog dialog = new JDialog(OrderDashboard.this, "Coupon Code");
-                dialog.setContentPane(new CouponCode(dialog));
-                dialog.pack();
-                dialog.setLocationRelativeTo(null);
-                dialog.setVisible(true);
+                if(percentDiscount <= 0 || percentDiscount <= 0) {
+                    JDialog dialog = new JDialog(OrderDashboard.this, "Coupon Code");
+                    dialog.setContentPane(new CouponCode(dialog, OrderDashboard.this));
+                    dialog.pack();
+                    dialog.setLocationRelativeTo(null);
+                    dialog.setVisible(true);
+                }
+                else {
+                    percentDiscount = BigDecimal.valueOf(0).setScale(2, RoundingMode.HALF_UP).floatValue();
+                    permaDiscount = BigDecimal.valueOf(0).setScale(2, RoundingMode.HALF_UP).floatValue();
+                    couponID = -1;
+                    actualizeOverallSum();
+                    addCouponButton.setText("Add coupon");
+                }
             }
         });
         finaliseOrderButton.addActionListener(new ActionListener() {
@@ -196,16 +211,17 @@ public class OrderDashboard extends JFrame {
                         options[1]);
 
                 if (result == 0) {
-                    long id_of_employee = (long) app.getApp().getCurrentUserId();
+                    long idOfEmployee = (long) app.getApp().getCurrentUserId();
                     //                    id 404, because if it's default
+                    long couponIdForForm = couponID == -1 ? 404 : couponID;
                     long order_id = databaseEndpoint.addOrderEntity(
                             (double) computeOrderSum(orderProducts, productAmount),
                             1,
                             "gotowka",
                             404,
                             404,
-                            404,
-                            id_of_employee
+                            couponIdForForm,
+                            idOfEmployee
                     );
                     for (int i = 0; i < orderProducts.size(); ++i)
                         databaseEndpoint.addProductOrderEntity(
@@ -215,6 +231,16 @@ public class OrderDashboard extends JFrame {
                         );
                     mainFrame.destroyOrder();
                 }
+            }
+        });
+        addInvoiceButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JDialog dialog = new JDialog(OrderDashboard.this, "Invoice");
+                dialog.setContentPane(new Invoice(dialog));
+                dialog.pack();
+                dialog.setLocationRelativeTo(null);
+                dialog.setVisible(true);
             }
         });
     }
@@ -240,9 +266,37 @@ public class OrderDashboard extends JFrame {
     private float computeOrderSum(ArrayList<ProductEntity> productListInOrder, ArrayList<Integer> productAmount){
         float sum = 0.0f;
         for(int i = 0 ; i < productListInOrder.size() ; ++i)
-            sum += (float) ( productListInOrder.get(i).getPrice() * Float.valueOf( String.valueOf(productAmount.get(i))));
+            sum += (float) ( productListInOrder.get(i).getPrice()
+                    * Float.valueOf( String.valueOf( productAmount.get( i ) ) ) );
+        System.out.println("\n\n\n\n\nlollll" + sum);
+        sum = sum * (float)( (100.0f - percentDiscount) / 100.0f );
+        System.out.println(sum);
+        sum = sum - (float)permaDiscount;
+        System.out.println(sum);
+        System.out.println(permaDiscount);
+        System.out.println(percentDiscount);
         sum = BigDecimal.valueOf(sum).setScale(2, RoundingMode.HALF_UP).floatValue();
         return sum;
+    }
+    public void actualizeOverallSum(){
+        sumValueLabel.setText( "" + computeOrderSum( orderProducts, productAmount ) + "zł");
+    }
+    public void setCoupon(String couponTextFromDatabase){
+        String[] output = couponTextFromDatabase.split(" ");
+        if( output[0].equals( "procent" ) ) {
+            percentDiscount = Double.parseDouble(output[1]);
+            couponID = Long.parseLong( output[2] );
+            percentDiscount = BigDecimal.valueOf(percentDiscount).setScale(2, RoundingMode.HALF_UP).floatValue();
+            System.out.println("procencik:" + percentDiscount);
+        }
+        else {
+            permaDiscount = Double.parseDouble(output[1]);
+            couponID = Long.parseLong( output[2] );
+            permaDiscount = BigDecimal.valueOf(permaDiscount).setScale(2, RoundingMode.HALF_UP).floatValue();
+            System.out.println("staloliczbowa:" + permaDiscount);
+        }
+        addCouponButton.setText("Remove coupon");
+
     }
 }
 
