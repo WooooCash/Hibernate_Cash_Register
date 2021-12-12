@@ -7,9 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -30,6 +27,7 @@ public class OrderDashboard extends JFrame {
 
     private JButton finaliseOrderButton;
     private JButton addCouponButton;
+    private JButton addInvoiceButton;
     DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
     public OrderDashboard(MainFrame mainFrame) {
 //        it must be final so the taken type could be global
@@ -215,6 +213,16 @@ public class OrderDashboard extends JFrame {
                         );
                     mainFrame.destroyOrder();
                 }
+            }
+        });
+        addInvoiceButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JDialog dialog = new JDialog(OrderDashboard.this, "Invoice");
+                dialog.setContentPane(new Invoice(dialog));
+                dialog.pack();
+                dialog.setLocationRelativeTo(null);
+                dialog.setVisible(true);
             }
         });
     }
