@@ -3,6 +3,7 @@ package com.example.CashRegister;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.xml.crypto.Data;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -237,6 +238,9 @@ public class OrderDashboard extends JFrame {
                                 orderProducts.get(i).getProductId(),
                                 order_id
                         );
+                    invoiceEntity.setTaxamount(databaseEndpoint.getTaxAmount(order_id));
+                    invoiceEntity.setNetprice((float) (computeOrderSum(orderProducts, productAmount) - invoiceEntity.getTaxamount()));
+                    databaseEndpoint.updateInvoiceEntity(invoiceEntity);
                     mainFrame.destroyOrder();
                 }
             }

@@ -225,4 +225,31 @@ public class DatabaseEndpoint extends Thread {
         session.save(invoiceEntity);
         session.getTransaction().commit();
     }
+
+    public double getTaxAmount(long order_id) {
+        System.out.println("getTaxAmount" + order_id);
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        String sql = "select sum(sum(p.price * tc.percentagetax)) " +
+                "from OrderEntity o " +
+                "join ProductorderEntity po on o.orderId = po.orderId" +
+                "    join ProductEntity p on po.productId = p.productId" +
+                "    join ProductcategoryEntity pc on p.productcategoryId = pc.productcategoryId" +
+                "    join TaxcategoryEntity tc on pc.taxcategoryId = tc.taxcategoryId" +
+                "        where o.orderId = :id" +
+                "        group by tc.percentagetax";
+        Query query = session.createQuery(sql);
+        query.setParameter("id", (long)order_id);
+        System.out.println("getTaxAmount" + query.list().get(0));
+        double result = (double) query.list().get(0);
+        session.close();
+        return result;
+    }
+
+    public void updateInvoiceEntity(InvoiceEntity invoiceEntity) {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        session.update(invoiceEntity);
+        session.getTransaction().commit();
+    }
 }
