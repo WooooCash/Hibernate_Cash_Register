@@ -74,7 +74,100 @@ public class DatabaseEndpoint extends Thread {
         return new int[] {!list.isEmpty() ? 1 : 0, !list.isEmpty() ? ((Long)input[0]).intValue() : -1};
     }
 
-    public ArrayList<Object[]> getRankedEmployeeList() {
+    public ArrayList<Object[]> getRankedEmployeeListDay() {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        String sql = "select e.employeeId, e.name, nvl(sum(o.ordertotalprice),0) as sales " +
+                "from EmployeeEntity e left join OrderEntity o ON e.employeeId = o.employeeId " +
+                "and to_char(o.orderdate) = to_char(sysdate) " +
+                "group by e.employeeId, e.name " +
+                "order by sales desc ";
+
+        Query query = session.createQuery(sql);
+        List list = query.list();
+
+        ArrayList<Object[]> employeeRankingList = new ArrayList<>();
+        for (Object o : list){
+            Object[] input = (Object[])o;
+            employeeRankingList.add(new Object[] {input[1], input[2]});
+        }
+
+        session.close();
+
+        return employeeRankingList;
+    }
+
+    public ArrayList<Object[]> getRankedEmployeeListMonth() {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        String sql = "select e.employeeId, e.name, nvl(sum(o.ordertotalprice),0) as sales " +
+                "from EmployeeEntity e left join OrderEntity o ON e.employeeId = o.employeeId " +
+                "and to_char(o.orderdate, 'YYYY MON') = to_char(sysdate, 'YYYY MON') " +
+                "group by e.employeeId, e.name " +
+                "order by sales desc ";
+
+        Query query = session.createQuery(sql);
+        List list = query.list();
+
+        ArrayList<Object[]> employeeRankingList = new ArrayList<>();
+        for (Object o : list){
+            Object[] input = (Object[])o;
+            employeeRankingList.add(new Object[] {input[1], input[2]});
+        }
+
+        session.close();
+
+        return employeeRankingList;
+    }
+
+    public ArrayList<Object[]> getRankedEmployeeListQuarter() {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        String sql = "select e.employeeId, e.name, nvl(sum(o.ordertotalprice),0) as sales " +
+                "from EmployeeEntity e left join OrderEntity o ON e.employeeId = o.employeeId " +
+                "and to_char(o.orderdate, 'YYYY') = to_char(sysdate, 'YYYY') " +
+                "and ceil(to_number(to_char(orderdate, 'MM'))*4/12) = ceil(to_number(to_char(sysdate, 'MM'))*4/12) " +
+                "group by e.employeeId, e.name " +
+                "order by sales desc ";
+
+        Query query = session.createQuery(sql);
+        List list = query.list();
+
+        ArrayList<Object[]> employeeRankingList = new ArrayList<>();
+        for (Object o : list){
+            Object[] input = (Object[])o;
+            employeeRankingList.add(new Object[] {input[1], input[2]});
+        }
+
+        session.close();
+
+        return employeeRankingList;
+    }
+
+    public ArrayList<Object[]> getRankedEmployeeListYear() {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        String sql = "select e.employeeId, e.name, nvl(sum(o.ordertotalprice),0) as sales " +
+                "from EmployeeEntity e left join OrderEntity o ON e.employeeId = o.employeeId " +
+                "and to_char(o.orderdate, 'YYYY') = to_char(sysdate, 'YYYY') " +
+                "group by e.employeeId, e.name " +
+                "order by sales desc ";
+
+        Query query = session.createQuery(sql);
+        List list = query.list();
+
+        ArrayList<Object[]> employeeRankingList = new ArrayList<>();
+        for (Object o : list){
+            Object[] input = (Object[])o;
+            employeeRankingList.add(new Object[] {input[1], input[2]});
+        }
+
+        session.close();
+
+        return employeeRankingList;
+    }
+
+    public ArrayList<Object[]> getRankedEmployeeListAllTime() {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
         String sql = "select e.employeeId, e.name, nvl(sum(o.ordertotalprice),0) as sales " +
@@ -94,6 +187,50 @@ public class DatabaseEndpoint extends Thread {
         session.close();
 
         return employeeRankingList;
+    }
+
+    public ArrayList<Object[]> getRankedSupplierListDay() {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        String sql = "select s.nip, s.name, nvl(sum(po.priceforproduct),0) as sales " +
+                "from ProductEntity p join ProductorderEntity po ON p.productId = po.productId right join SupplierEntity s on s.nip = p.suppliernip " +
+                "group by s.nip, s.name " +
+                "order by sales desc ";
+
+        Query query = session.createQuery(sql);
+        List list = query.list();
+
+        ArrayList<Object[]> supplierRankingList = new ArrayList<>();
+        for (Object o : list){
+            Object[] input = (Object[])o;
+            supplierRankingList.add(new Object[] {input[1], input[2]});
+        }
+
+        session.close();
+
+        return supplierRankingList;
+    }
+
+    public ArrayList<Object[]> getRankedSupplierListAllTime() {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        String sql = "select s.nip, s.name, nvl(sum(po.priceforproduct),0) as sales " +
+                "from ProductEntity p join ProductorderEntity po ON p.productId = po.productId right join SupplierEntity s on s.nip = p.suppliernip " +
+                "group by s.nip, s.name " +
+                "order by sales desc ";
+
+        Query query = session.createQuery(sql);
+        List list = query.list();
+
+        ArrayList<Object[]> supplierRankingList = new ArrayList<>();
+        for (Object o : list){
+            Object[] input = (Object[])o;
+            supplierRankingList.add(new Object[] {input[1], input[2]});
+        }
+
+        session.close();
+
+        return supplierRankingList;
     }
 
     public void saveNewAssistanceRequest(int empId, String description) {

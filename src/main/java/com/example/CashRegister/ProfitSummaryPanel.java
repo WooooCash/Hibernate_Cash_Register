@@ -31,8 +31,17 @@ public class ProfitSummaryPanel extends JPanel {
     JTable employeeRanking;
     JTable supplierRanking;
 
-    ArrayList<Object[]> employeeList;
-    ArrayList<String[]> supplierList;
+    ArrayList<Object[]> employeeListDay;
+    ArrayList<Object[]> employeeListMonth;
+    ArrayList<Object[]> employeeListQuarter;
+    ArrayList<Object[]> employeeListYear;
+    ArrayList<Object[]> employeeListAllTime;
+
+    ArrayList<Object[]> supplierListDay;
+    ArrayList<Object[]> supplierListMonth;
+    ArrayList<Object[]> supplierListQuarter;
+    ArrayList<Object[]> supplierListYear;
+    ArrayList<Object[]> supplierListAllTime;
 
     JPanel radioPanel;
     ButtonGroup radioButtons;
@@ -40,13 +49,24 @@ public class ProfitSummaryPanel extends JPanel {
     JRadioButton month;
     JRadioButton quarter;
     JRadioButton year;
+    JRadioButton allTime;
 
     JButton increment;
     JButton decrement;
 
+    JScrollPane erScroll;
+
     public ProfitSummaryPanel(MainFrame mainFrame) {
         db = DatabaseEndpoint.getDatabaseEndpoint();
-        employeeList = db.getRankedEmployeeList();
+
+        employeeListDay = db.getRankedEmployeeListDay();
+        employeeListMonth = db.getRankedEmployeeListMonth();
+        employeeListQuarter= db.getRankedEmployeeListQuarter();
+        employeeListYear = db.getRankedEmployeeListYear();
+        employeeListAllTime = db.getRankedEmployeeListAllTime();
+
+
+        supplierListAllTime = db.getRankedSupplierListAllTime();
 
         this.setLayout(new BorderLayout());
 
@@ -77,7 +97,7 @@ public class ProfitSummaryPanel extends JPanel {
             banner.add(date);
             banner.add(time);
 
-            Timer t = new Timer(1000, new ActionListener() {
+            Timer t = new Timer(100, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     LocalDateTime newLocalDT = LocalDateTime.now();
@@ -95,12 +115,16 @@ public class ProfitSummaryPanel extends JPanel {
             month = new JRadioButton("month");
             quarter = new JRadioButton("quarter");
             year = new JRadioButton("year");
+            allTime = new JRadioButton("all time");
+
+            setButtonActions();
 
             radioButtons = new ButtonGroup();
             radioButtons.add(day);
             radioButtons.add(month);
             radioButtons.add(quarter);
             radioButtons.add(year);
+            radioButtons.add(allTime);
 
             radioPanel = new JPanel();
             radioPanel.setLayout(new GridLayout(0, 1));
@@ -115,6 +139,7 @@ public class ProfitSummaryPanel extends JPanel {
             radioPanel.add(month);
             radioPanel.add(quarter);
             radioPanel.add(year);
+            radioPanel.add(allTime);
 
 
             JPanel spacerContainer = new JPanel();
@@ -143,11 +168,11 @@ public class ProfitSummaryPanel extends JPanel {
                 employeeTab = new JPanel();
                 employeeTab.setLayout(new BorderLayout());
 
-                Object[][] lol = new Object[employeeList.size()][];
-                lol = employeeList.toArray(lol);
-                employeeRanking = new JTable(lol, new String[] {"Name", "Net Sales"});
+                Object[][] employeeArray = new Object[employeeListAllTime.size()][];
+                employeeArray = employeeListAllTime.toArray(employeeArray);
+                employeeRanking = new JTable(employeeArray, new String[] {"Name", "Sales"});
 
-                JScrollPane erScroll = new JScrollPane(employeeRanking);
+                erScroll = new JScrollPane(employeeRanking);
                 employeeRanking.setFillsViewportHeight(true);
 
                 employeeTab.add(erScroll);
@@ -156,8 +181,16 @@ public class ProfitSummaryPanel extends JPanel {
             // Supplier Ranking tab
             {
                 supplierTab = new JPanel();
+                supplierTab.setLayout(new BorderLayout());
 
+                Object[][] supplierArray = new Object[supplierListAllTime.size()][];
+                supplierArray = supplierListAllTime.toArray(supplierArray);
+                supplierRanking = new JTable(supplierArray, new String[] {"Name", "Sales"});
 
+                JScrollPane srScroll = new JScrollPane(supplierRanking);
+                supplierRanking.setFillsViewportHeight(true);
+
+                supplierTab.add(srScroll);
             }
 
             tabbedPane.addTab("Profit Summary", profitTab);
@@ -170,6 +203,90 @@ public class ProfitSummaryPanel extends JPanel {
 
         this.add(banner, BorderLayout.NORTH);
         this.add(sidebar, BorderLayout.WEST);
+    }
+
+    private void setButtonActions() {
+        day.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object[][] employeeArray = new Object[employeeListDay.size()][];
+                employeeArray = employeeListDay.toArray(employeeArray);
+                employeeRanking = new JTable(employeeArray, new String[] {"Name", "Sales"});
+
+                employeeTab.remove(0);
+                erScroll = new JScrollPane(employeeRanking);
+                employeeRanking.setFillsViewportHeight(true);
+
+                employeeTab.add(erScroll);
+                employeeTab.revalidate();
+                employeeTab.repaint();
+            }
+        });
+        month.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object[][] employeeArray = new Object[employeeListMonth.size()][];
+                employeeArray = employeeListMonth.toArray(employeeArray);
+                employeeRanking = new JTable(employeeArray, new String[] {"Name", "Sales"});
+
+                employeeTab.remove(0);
+                erScroll = new JScrollPane(employeeRanking);
+                employeeRanking.setFillsViewportHeight(true);
+
+                employeeTab.add(erScroll);
+                employeeTab.revalidate();
+                employeeTab.repaint();
+            }
+        });
+        quarter.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object[][] employeeArray = new Object[employeeListQuarter.size()][];
+                employeeArray = employeeListQuarter.toArray(employeeArray);
+                employeeRanking = new JTable(employeeArray, new String[] {"Name", "Sales"});
+
+                employeeTab.remove(0);
+                erScroll = new JScrollPane(employeeRanking);
+                employeeRanking.setFillsViewportHeight(true);
+
+                employeeTab.add(erScroll);
+                employeeTab.revalidate();
+                employeeTab.repaint();
+            }
+        });
+        year.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object[][] employeeArray = new Object[employeeListYear.size()][];
+                employeeArray = employeeListYear.toArray(employeeArray);
+                employeeRanking = new JTable(employeeArray, new String[] {"Name", "Sales"});
+
+                employeeTab.remove(0);
+                erScroll = new JScrollPane(employeeRanking);
+                employeeRanking.setFillsViewportHeight(true);
+
+                employeeTab.add(erScroll);
+                employeeTab.revalidate();
+                employeeTab.repaint();
+            }
+        });
+        allTime.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object[][] employeeArray = new Object[employeeListAllTime.size()][];
+                employeeArray = employeeListAllTime.toArray(employeeArray);
+                employeeRanking = new JTable(employeeArray, new String[] {"Name", "Sales"});
+
+                employeeTab.remove(0);
+                erScroll = new JScrollPane(employeeRanking);
+                employeeRanking.setFillsViewportHeight(true);
+
+                employeeTab.add(erScroll);
+                employeeTab.revalidate();
+                employeeTab.repaint();
+            }
+        });
+
     }
 
 }
