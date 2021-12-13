@@ -193,7 +193,86 @@ public class DatabaseEndpoint extends Thread {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
         String sql = "select s.nip, s.name, nvl(sum(po.priceforproduct),0) as sales " +
-                "from ProductEntity p join ProductorderEntity po ON p.productId = po.productId right join SupplierEntity s on s.nip = p.suppliernip " +
+                "from ProductEntity p join ProductorderEntity po ON p.productId = po.productId " +
+                "join OrderEntity o ON po.orderId = o.orderId " +
+                "right join SupplierEntity s on s.nip = p.suppliernip " +
+                "and to_char(o.orderdate) = to_char(sysdate) " +
+                "group by s.nip, s.name " +
+                "order by sales desc ";
+
+        Query query = session.createQuery(sql);
+        List list = query.list();
+
+        ArrayList<Object[]> supplierRankingList = new ArrayList<>();
+        for (Object o : list){
+            Object[] input = (Object[])o;
+            supplierRankingList.add(new Object[] {input[1], input[2]});
+        }
+
+        session.close();
+
+        return supplierRankingList;
+    }
+
+    public ArrayList<Object[]> getRankedSupplierListMonth() {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        String sql = "select s.nip, s.name, nvl(sum(po.priceforproduct),0) as sales " +
+                "from ProductEntity p join ProductorderEntity po ON p.productId = po.productId " +
+                "join OrderEntity o ON po.orderId = o.orderId " +
+                "right join SupplierEntity s on s.nip = p.suppliernip " +
+                "and to_char(o.orderdate, 'YYYY MON') = to_char(sysdate, 'YYYY MON') " +
+                "group by s.nip, s.name " +
+                "order by sales desc ";
+
+        Query query = session.createQuery(sql);
+        List list = query.list();
+
+        ArrayList<Object[]> supplierRankingList = new ArrayList<>();
+        for (Object o : list){
+            Object[] input = (Object[])o;
+            supplierRankingList.add(new Object[] {input[1], input[2]});
+        }
+
+        session.close();
+
+        return supplierRankingList;
+    }
+
+    public ArrayList<Object[]> getRankedSupplierListQuarter() {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        String sql = "select s.nip, s.name, nvl(sum(po.priceforproduct),0) as sales " +
+                "from ProductEntity p join ProductorderEntity po ON p.productId = po.productId " +
+                "join OrderEntity o ON po.orderId = o.orderId " +
+                "right join SupplierEntity s on s.nip = p.suppliernip " +
+                "and to_char(o.orderdate, 'YYYY') = to_char(sysdate, 'YYYY') " +
+                "and ceil(to_number(to_char(orderdate, 'MM'))*4/12) = ceil(to_number(to_char(sysdate, 'MM'))*4/12) " +
+                "group by s.nip, s.name " +
+                "order by sales desc ";
+
+        Query query = session.createQuery(sql);
+        List list = query.list();
+
+        ArrayList<Object[]> supplierRankingList = new ArrayList<>();
+        for (Object o : list){
+            Object[] input = (Object[])o;
+            supplierRankingList.add(new Object[] {input[1], input[2]});
+        }
+
+        session.close();
+
+        return supplierRankingList;
+    }
+
+    public ArrayList<Object[]> getRankedSupplierListYear() {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        String sql = "select s.nip, s.name, nvl(sum(po.priceforproduct),0) as sales " +
+                "from ProductEntity p join ProductorderEntity po ON p.productId = po.productId " +
+                "join OrderEntity o ON po.orderId = o.orderId " +
+                "right join SupplierEntity s on s.nip = p.suppliernip " +
+                "and to_char(o.orderdate, 'YYYY') = to_char(sysdate, 'YYYY') " +
                 "group by s.nip, s.name " +
                 "order by sales desc ";
 
