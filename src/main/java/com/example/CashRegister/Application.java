@@ -11,7 +11,7 @@ public class Application {
     }
 
     private static Application app = new Application();
-    private int currentUserId;
+    private int currentUserId = -1;
 //      #TODO uncomment for database connection
     private DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
     MainFrame mainFrame;
@@ -54,7 +54,10 @@ public class Application {
             System.out.println("Invalid credentials");
         return false;
     }
+    public boolean logout(){
 
+        return true;
+    }
     public void sendAssistanceRequest(String description) {
         //send this description to database
         databaseEndpoint.saveNewAssistanceRequest(currentUserId, description);

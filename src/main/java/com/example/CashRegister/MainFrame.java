@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class MainFrame extends JFrame {
 
@@ -13,6 +15,9 @@ public class MainFrame extends JFrame {
     private JPanel leftPanel;
     private JPanel centerPanel;
     private JFrame Productframe;
+    private JButton logoutButton;
+    private JButton dashboardRedirectButton;
+
     public MainFrame() {
 
 
@@ -58,9 +63,57 @@ public class MainFrame extends JFrame {
         leftPanel.add(loggedInText);
 
         //Add new button options to left Panel and add center panel
-        for (int i = 0; i < 6; i++) {
-            leftPanel.add(new JButton("Button" + i));
-        }
+        dashboardRedirectButton = new JButton("Go to Dashboard");
+        leftPanel.add(dashboardRedirectButton);
+        dashboardRedirectButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object[] options = {"Yes", "No"};
+                int result = JOptionPane.showOptionDialog(null,
+                        "Do you really want to go to the Dashboard?",
+                        "Request Confirmation",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        options,
+                        options[1]);
+                if(result == 0)
+                    setDashboardPage(status);
+            }
+        });
+
+        logoutButton = new JButton("Logout");
+        leftPanel.add(logoutButton);
+
+        logoutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object[] options = {"Yes", "No"};
+                int result = JOptionPane.showOptionDialog(null,
+                        "Do you really want to logout?",
+                        "Request Confirmation",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        options,
+                        options[1]);
+                if(result == 0) {
+                    leftPanel.removeAll();
+                    JButton loginButton = new JButton("Login");
+                    loginButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            LoginFrame loginFrame = new LoginFrame();
+                        }
+                    });
+                    leftPanel.add(loginButton);
+                    updateComponent(leftPanel);
+                    centerPanel.removeAll();
+                    updateComponent(centerPanel);
+                }
+            }
+        });
+
         updateComponent(leftPanel);
 
         setDashboardPage(status);
