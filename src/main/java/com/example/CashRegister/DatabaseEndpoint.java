@@ -10,10 +10,7 @@ import org.hibernate.query.Query;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class DatabaseEndpoint extends Thread {
@@ -61,10 +58,10 @@ public class DatabaseEndpoint extends Thread {
     public static int[] login(String name, String password){
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        String sql = "select e.employeeId, e.gender from EmployeeEntity e where e.name=:name and e.password=:password";
+        String sql = "select e.employeeId, e.gender from EmployeeEntity e where lower(e.name)=:name and e.password=:password";
         Query query = session.createQuery(sql);
         //System.out.println(query);
-        query.setParameter("name", name)
+        query.setParameter("name", name.toLowerCase( Locale.ROOT ) )
                 .setParameter("password", password);
         List list = query.list();
         Object[] input = null;
@@ -75,6 +72,28 @@ public class DatabaseEndpoint extends Thread {
 
 
         return new int[] {!list.isEmpty() ? 1 : 0, !list.isEmpty() ? ((Long)input[0]).intValue() : -1};
+    }
+
+    public ArrayList<Object[]> getRankedEmployeeList() {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        String sql = "select e.employeeId, e.name, nvl(sum(o.ordertotalprice),0) as sales " +
+                "from EmployeeEntity e left join OrderEntity o ON e.employeeId = o.employeeId " +
+                "group by e.employeeId, e.name " +
+                "order by sales desc ";
+
+        Query query = session.createQuery(sql);
+        List list = query.list();
+
+        ArrayList<Object[]> employeeRankingList = new ArrayList<>();
+        for (Object o : list){
+            Object[] input = (Object[])o;
+            employeeRankingList.add(new Object[] {input[1], input[2]});
+        }
+
+        session.close();
+
+        return employeeRankingList;
     }
 
     public void saveNewAssistanceRequest(int empId, String description) {
@@ -174,6 +193,27 @@ public class DatabaseEndpoint extends Thread {
         session.close();
         return p;
     }
+    public String getCouponEntity(long couponCode){
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        String sql = "from CouponEntity CE where :id=CE.couponcode";
+        Query query = session.createQuery(sql);
+        query.setParameter("id", couponCode);
+        List result = query.list();
+        CouponEntity coupon;
+        String returnStatement;
+        if( !result.isEmpty() ) {
+            coupon = (CouponEntity) query.list().get(0);
+            returnStatement = "" + (coupon.getTypeofcoupon().equals("P") ? "procent " : "liczba ") +
+                    coupon.getCouponamount() + " " + coupon.getCouponId();
+        }
+        else{
+            returnStatement = "";
+        }
+        session.close();
+        return returnStatement;
+    }
+//
     public static void closeConnection(){
         factory.close();
         System.out.println("closing works");

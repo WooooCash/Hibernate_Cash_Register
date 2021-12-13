@@ -107,4 +107,10 @@ public class MainFrame extends JFrame {
     public void destroyOrder(){
         Productframe.dispose();
     }
+
+    public void setProfitSummaryPage() {
+        centerPanel.remove(0);
+        centerPanel.add(new ProfitSummaryPanel(this), BorderLayout.CENTER);
+        updateComponent(centerPanel);
+    }
 }
