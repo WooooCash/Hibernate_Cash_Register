@@ -14,6 +14,7 @@ import java.util.Locale;
 
 public class OrderDashboard extends JFrame {
     private InvoiceEntity invoiceEntity = new InvoiceEntity();
+    private boolean invoiceCreated = false;
 
     private Application app;
     private JPanel mainPanel;
@@ -213,7 +214,11 @@ public class OrderDashboard extends JFrame {
                         options[1]);
 
                 if (result == 0) {
-                    databaseEndpoint.addInvoiceEntity(invoiceEntity);
+                    if (invoiceCreated) {
+                        databaseEndpoint.addInvoiceEntity(invoiceEntity);
+                    }
+
+                    int invoiceID = invoiceCreated ? (int) invoiceEntity.getInvoiceId() : 404;
                     long idOfEmployee = (long) app.getApp().getCurrentUserId();
                     //                    id 404, because if it's default
                     long couponIdForForm = couponID == -1 ? 404 : couponID;
@@ -222,7 +227,7 @@ public class OrderDashboard extends JFrame {
                             1,
                             "gotowka",
                             404,
-                            invoiceEntity.getInvoiceId(),
+                            invoiceID,
                             404,
                             idOfEmployee
                     );
@@ -307,6 +312,7 @@ public class OrderDashboard extends JFrame {
         invoiceEntity.setFirstname(firstName);
         invoiceEntity.setLastname(lastName);
         invoiceEntity.setAddress(address);
+        invoiceCreated = true;
     }
 }
 
