@@ -3,6 +3,7 @@ package com.example.CashRegister;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.xml.crypto.Data;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -13,6 +14,9 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class OrderDashboard extends JFrame {
+    private InvoiceEntity invoiceEntity = new InvoiceEntity();
+    private boolean invoiceCreated = false;
+
     private Application app;
     private JPanel mainPanel;
     private JTextField searchProductsField;
@@ -211,6 +215,11 @@ public class OrderDashboard extends JFrame {
                         options[1]);
 
                 if (result == 0) {
+                    if (invoiceCreated) {
+                        databaseEndpoint.addInvoiceEntity(invoiceEntity);
+                    }
+
+                    int invoiceID = invoiceCreated ? (int) invoiceEntity.getInvoiceId() : 404;
                     long idOfEmployee = (long) app.getApp().getCurrentUserId();
                     //                    id 404, because if it's default
                     long couponIdForForm = couponID == -1 ? 404 : couponID;
@@ -219,8 +228,8 @@ public class OrderDashboard extends JFrame {
                             1,
                             "gotowka",
                             404,
+                            invoiceID,
                             404,
-                            couponIdForForm,
                             idOfEmployee
                     );
                     for (int i = 0; i < orderProducts.size(); ++i)
@@ -229,6 +238,9 @@ public class OrderDashboard extends JFrame {
                                 orderProducts.get(i).getProductId(),
                                 order_id
                         );
+                    invoiceEntity.setTaxamount(databaseEndpoint.getTaxAmount(order_id));
+                    invoiceEntity.setNetprice((float) (computeOrderSum(orderProducts, productAmount) - invoiceEntity.getTaxamount()));
+                    databaseEndpoint.updateInvoiceEntity(invoiceEntity);
                     mainFrame.destroyOrder();
                 }
             }
@@ -237,7 +249,7 @@ public class OrderDashboard extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JDialog dialog = new JDialog(OrderDashboard.this, "Invoice");
-                dialog.setContentPane(new Invoice(dialog));
+                dialog.setContentPane(new Invoice(dialog, OrderDashboard.this));
                 dialog.pack();
                 dialog.setLocationRelativeTo(null);
                 dialog.setVisible(true);
@@ -297,6 +309,14 @@ public class OrderDashboard extends JFrame {
         }
         addCouponButton.setText("Remove coupon");
 
+    }
+
+    public void addInvoice(String nip, String firstName, String lastName, String address) {
+        invoiceEntity.setNip(Long.parseLong(nip));
+        invoiceEntity.setFirstname(firstName);
+        invoiceEntity.setLastname(lastName);
+        invoiceEntity.setAddress(address);
+        invoiceCreated = true;
     }
 }
 
