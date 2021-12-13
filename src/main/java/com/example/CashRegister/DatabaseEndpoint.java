@@ -74,12 +74,12 @@ public class DatabaseEndpoint extends Thread {
         return new int[] {!list.isEmpty() ? 1 : 0, !list.isEmpty() ? ((Long)input[0]).intValue() : -1};
     }
 
-    public ArrayList<Object[]> getRankedEmployeeListDay() {
+    public ArrayList<Object[]> getRankedEmployeeListTemplate(String conditions) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
         String sql = "select e.employeeId, e.name, nvl(sum(o.ordertotalprice),0) as sales " +
                 "from EmployeeEntity e left join OrderEntity o ON e.employeeId = o.employeeId " +
-                "and to_char(o.orderdate) = to_char(sysdate) " +
+                 conditions +
                 "group by e.employeeId, e.name " +
                 "order by sales desc ";
 
@@ -87,229 +87,135 @@ public class DatabaseEndpoint extends Thread {
         List list = query.list();
 
         ArrayList<Object[]> employeeRankingList = new ArrayList<>();
+        int i = 1;
         for (Object o : list){
             Object[] input = (Object[])o;
-            employeeRankingList.add(new Object[] {input[1], input[2]});
+            employeeRankingList.add(new Object[] {i++, input[1], input[2]});
         }
 
         session.close();
 
         return employeeRankingList;
+    }
+
+    public ArrayList<Object[]> getRankedEmployeeListDay() {
+        String condition = "and to_char(o.orderdate) = to_char(sysdate) ";
+        return getRankedEmployeeListTemplate(condition);
     }
 
     public ArrayList<Object[]> getRankedEmployeeListMonth() {
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        String sql = "select e.employeeId, e.name, nvl(sum(o.ordertotalprice),0) as sales " +
-                "from EmployeeEntity e left join OrderEntity o ON e.employeeId = o.employeeId " +
-                "and to_char(o.orderdate, 'YYYY MON') = to_char(sysdate, 'YYYY MON') " +
-                "group by e.employeeId, e.name " +
-                "order by sales desc ";
-
-        Query query = session.createQuery(sql);
-        List list = query.list();
-
-        ArrayList<Object[]> employeeRankingList = new ArrayList<>();
-        for (Object o : list){
-            Object[] input = (Object[])o;
-            employeeRankingList.add(new Object[] {input[1], input[2]});
-        }
-
-        session.close();
-
-        return employeeRankingList;
+        String condition = "and to_char(o.orderdate, 'YYYY MON') = to_char(sysdate, 'YYYY MON') ";
+        return getRankedEmployeeListTemplate(condition);
     }
 
     public ArrayList<Object[]> getRankedEmployeeListQuarter() {
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        String sql = "select e.employeeId, e.name, nvl(sum(o.ordertotalprice),0) as sales " +
-                "from EmployeeEntity e left join OrderEntity o ON e.employeeId = o.employeeId " +
-                "and to_char(o.orderdate, 'YYYY') = to_char(sysdate, 'YYYY') " +
-                "and ceil(to_number(to_char(orderdate, 'MM'))*4/12) = ceil(to_number(to_char(sysdate, 'MM'))*4/12) " +
-                "group by e.employeeId, e.name " +
-                "order by sales desc ";
-
-        Query query = session.createQuery(sql);
-        List list = query.list();
-
-        ArrayList<Object[]> employeeRankingList = new ArrayList<>();
-        for (Object o : list){
-            Object[] input = (Object[])o;
-            employeeRankingList.add(new Object[] {input[1], input[2]});
-        }
-
-        session.close();
-
-        return employeeRankingList;
+        String condition = "and to_char(o.orderdate, 'YYYY') = to_char(sysdate, 'YYYY') " +
+        "and ceil(to_number(to_char(orderdate, 'MM'))*4/12) = ceil(to_number(to_char(sysdate, 'MM'))*4/12) ";
+        return getRankedEmployeeListTemplate(condition);
     }
 
     public ArrayList<Object[]> getRankedEmployeeListYear() {
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        String sql = "select e.employeeId, e.name, nvl(sum(o.ordertotalprice),0) as sales " +
-                "from EmployeeEntity e left join OrderEntity o ON e.employeeId = o.employeeId " +
-                "and to_char(o.orderdate, 'YYYY') = to_char(sysdate, 'YYYY') " +
-                "group by e.employeeId, e.name " +
-                "order by sales desc ";
-
-        Query query = session.createQuery(sql);
-        List list = query.list();
-
-        ArrayList<Object[]> employeeRankingList = new ArrayList<>();
-        for (Object o : list){
-            Object[] input = (Object[])o;
-            employeeRankingList.add(new Object[] {input[1], input[2]});
-        }
-
-        session.close();
-
-        return employeeRankingList;
+        String condition = "and to_char(o.orderdate, 'YYYY') = to_char(sysdate, 'YYYY') ";
+        return getRankedEmployeeListTemplate(condition);
     }
 
+
     public ArrayList<Object[]> getRankedEmployeeListAllTime() {
+        return getRankedEmployeeListTemplate("");
+    }
+
+    public ArrayList<Object[]> getRankedSupplierListTemplate(String conditions) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        String sql = "select e.employeeId, e.name, nvl(sum(o.ordertotalprice),0) as sales " +
-                "from EmployeeEntity e left join OrderEntity o ON e.employeeId = o.employeeId " +
-                "group by e.employeeId, e.name " +
+        String sql = "select s.nip, s.name, nvl(sum(po.priceforproduct),0) as sales " +
+                "from ProductEntity p join ProductorderEntity po ON p.productId = po.productId " +
+                "join OrderEntity o ON po.orderId = o.orderId " +
+                "right join SupplierEntity s on s.nip = p.suppliernip " +
+                conditions +
+                "group by s.nip, s.name " +
                 "order by sales desc ";
 
         Query query = session.createQuery(sql);
         List list = query.list();
 
-        ArrayList<Object[]> employeeRankingList = new ArrayList<>();
+        ArrayList<Object[]> supplierRankingList = new ArrayList<>();
+        int i = 1;
         for (Object o : list){
             Object[] input = (Object[])o;
-            employeeRankingList.add(new Object[] {input[1], input[2]});
+            supplierRankingList.add(new Object[] {i++, input[1], input[2]});
         }
 
         session.close();
 
-        return employeeRankingList;
+        return supplierRankingList;
     }
 
     public ArrayList<Object[]> getRankedSupplierListDay() {
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        String sql = "select s.nip, s.name, nvl(sum(po.priceforproduct),0) as sales " +
-                "from ProductEntity p join ProductorderEntity po ON p.productId = po.productId " +
-                "join OrderEntity o ON po.orderId = o.orderId " +
-                "right join SupplierEntity s on s.nip = p.suppliernip " +
-                "and to_char(o.orderdate) = to_char(sysdate) " +
-                "group by s.nip, s.name " +
-                "order by sales desc ";
-
-        Query query = session.createQuery(sql);
-        List list = query.list();
-
-        ArrayList<Object[]> supplierRankingList = new ArrayList<>();
-        for (Object o : list){
-            Object[] input = (Object[])o;
-            supplierRankingList.add(new Object[] {input[1], input[2]});
-        }
-
-        session.close();
-
-        return supplierRankingList;
+        String condition = "and to_char(o.orderdate) = to_char(sysdate) ";
+        return getRankedSupplierListTemplate(condition);
     }
 
     public ArrayList<Object[]> getRankedSupplierListMonth() {
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        String sql = "select s.nip, s.name, nvl(sum(po.priceforproduct),0) as sales " +
-                "from ProductEntity p join ProductorderEntity po ON p.productId = po.productId " +
-                "join OrderEntity o ON po.orderId = o.orderId " +
-                "right join SupplierEntity s on s.nip = p.suppliernip " +
-                "and to_char(o.orderdate, 'YYYY MON') = to_char(sysdate, 'YYYY MON') " +
-                "group by s.nip, s.name " +
-                "order by sales desc ";
-
-        Query query = session.createQuery(sql);
-        List list = query.list();
-
-        ArrayList<Object[]> supplierRankingList = new ArrayList<>();
-        for (Object o : list){
-            Object[] input = (Object[])o;
-            supplierRankingList.add(new Object[] {input[1], input[2]});
-        }
-
-        session.close();
-
-        return supplierRankingList;
+        String condition = "and to_char(o.orderdate, 'YYYY MON') = to_char(sysdate, 'YYYY MON') ";
+        return getRankedSupplierListTemplate(condition);
     }
 
     public ArrayList<Object[]> getRankedSupplierListQuarter() {
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        String sql = "select s.nip, s.name, nvl(sum(po.priceforproduct),0) as sales " +
-                "from ProductEntity p join ProductorderEntity po ON p.productId = po.productId " +
-                "join OrderEntity o ON po.orderId = o.orderId " +
-                "right join SupplierEntity s on s.nip = p.suppliernip " +
-                "and to_char(o.orderdate, 'YYYY') = to_char(sysdate, 'YYYY') " +
-                "and ceil(to_number(to_char(orderdate, 'MM'))*4/12) = ceil(to_number(to_char(sysdate, 'MM'))*4/12) " +
-                "group by s.nip, s.name " +
-                "order by sales desc ";
-
-        Query query = session.createQuery(sql);
-        List list = query.list();
-
-        ArrayList<Object[]> supplierRankingList = new ArrayList<>();
-        for (Object o : list){
-            Object[] input = (Object[])o;
-            supplierRankingList.add(new Object[] {input[1], input[2]});
-        }
-
-        session.close();
-
-        return supplierRankingList;
+        String condition = "and to_char(o.orderdate, 'YYYY') = to_char(sysdate, 'YYYY') " +
+                "and ceil(to_number(to_char(orderdate, 'MM'))*4/12) = ceil(to_number(to_char(sysdate, 'MM'))*4/12) ";
+        return getRankedSupplierListTemplate(condition);
     }
 
     public ArrayList<Object[]> getRankedSupplierListYear() {
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        String sql = "select s.nip, s.name, nvl(sum(po.priceforproduct),0) as sales " +
-                "from ProductEntity p join ProductorderEntity po ON p.productId = po.productId " +
-                "join OrderEntity o ON po.orderId = o.orderId " +
-                "right join SupplierEntity s on s.nip = p.suppliernip " +
-                "and to_char(o.orderdate, 'YYYY') = to_char(sysdate, 'YYYY') " +
-                "group by s.nip, s.name " +
-                "order by sales desc ";
-
-        Query query = session.createQuery(sql);
-        List list = query.list();
-
-        ArrayList<Object[]> supplierRankingList = new ArrayList<>();
-        for (Object o : list){
-            Object[] input = (Object[])o;
-            supplierRankingList.add(new Object[] {input[1], input[2]});
-        }
-
-        session.close();
-
-        return supplierRankingList;
+        String condition = "and to_char(o.orderdate, 'YYYY') = to_char(sysdate, 'YYYY') ";
+        return getRankedSupplierListTemplate(condition);
     }
 
     public ArrayList<Object[]> getRankedSupplierListAllTime() {
+        return getRankedSupplierListTemplate("");
+    }
+
+
+    public double getProfitTemplate(String conditions) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        String sql = "select s.nip, s.name, nvl(sum(po.priceforproduct),0) as sales " +
-                "from ProductEntity p join ProductorderEntity po ON p.productId = po.productId right join SupplierEntity s on s.nip = p.suppliernip " +
-                "group by s.nip, s.name " +
-                "order by sales desc ";
+        String sql = "select sum(ordertotalprice) " +
+                "from OrderEntity " +
+                conditions;
 
         Query query = session.createQuery(sql);
         List list = query.list();
 
-        ArrayList<Object[]> supplierRankingList = new ArrayList<>();
-        for (Object o : list){
-            Object[] input = (Object[])o;
-            supplierRankingList.add(new Object[] {input[1], input[2]});
-        }
+        double input = (double)list.get(0);
 
         session.close();
 
-        return supplierRankingList;
+        return input;
+    }
+
+    public double getProfitDay() {
+        String condition = "where to_char(orderdate) = to_char(sysdate)";
+        return getProfitTemplate(condition);
+    }
+
+    public double getProfitMonth() {
+        String condition = "where to_char(orderdate, 'YYYY MON') = to_char(sysdate, 'YYYY MON')";
+        return getProfitTemplate(condition);
+    }
+
+    public double getProfitQuarter() {
+        String condition = "where to_char(orderdate, 'YYYY') = to_char(sysdate, 'YYYY') " +
+        "and ceil(to_number(to_char(orderdate, 'MM'))*4/12) = ceil(to_number(to_char(sysdate, 'MM'))*4/12)";
+        return getProfitTemplate(condition);
+    }
+
+    public double getProfitYear() {
+        String condition = "where to_char(orderdate, 'YYYY') = to_char(sysdate, 'YYYY')";
+        return getProfitTemplate(condition);
+    }
+
+    public double getProfitAllTime() {
+        return getProfitTemplate("");
     }
 
     public void saveNewAssistanceRequest(int empId, String description) {

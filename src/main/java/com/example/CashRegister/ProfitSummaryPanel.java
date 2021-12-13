@@ -28,8 +28,17 @@ public class ProfitSummaryPanel extends JPanel {
     private JPanel employeeTab;
     private JPanel supplierTab;
 
+    private JLabel profitLabel;
+    private double dayProfit;
+    private double monthProfit;
+    private double quarterProfit;
+    private double yearProfit;
+    private double allTimeProfit;
+
     private JTable employeeRanking;
     private JTable supplierRanking;
+
+    private String[] columnNames;
 
     private ArrayList<Object[]> employeeListDay;
     private ArrayList<Object[]> employeeListMonth;
@@ -65,6 +74,12 @@ public class ProfitSummaryPanel extends JPanel {
         LocalDateTime localDT = LocalDateTime.now();
         db = DatabaseEndpoint.getDatabaseEndpoint();
 
+        dayProfit = db.getProfitDay();
+        monthProfit = db.getProfitMonth();
+        quarterProfit = db.getProfitQuarter();
+        yearProfit = db.getProfitYear();
+        allTimeProfit = db.getProfitAllTime();
+
         employeeListDay = db.getRankedEmployeeListDay();
         employeeListMonth = db.getRankedEmployeeListMonth();
         employeeListQuarter= db.getRankedEmployeeListQuarter();
@@ -76,6 +91,8 @@ public class ProfitSummaryPanel extends JPanel {
         supplierListQuarter = db.getRankedSupplierListQuarter();
         supplierListYear = db.getRankedSupplierListYear();
         supplierListAllTime = db.getRankedSupplierListAllTime();
+
+
 
         DateTimeFormatter dayFormat = DateTimeFormatter.ofPattern("dd MMMM yyyy");
         DateTimeFormatter monthFormat = DateTimeFormatter.ofPattern("MMMM");
@@ -187,8 +204,15 @@ public class ProfitSummaryPanel extends JPanel {
             // Profit Tab
             {
                 profitTab = new JPanel();
+                profitTab.setLayout(new GridLayout());
+
+                profitLabel = new JLabel(dayProfit + " zł", SwingConstants.CENTER);
+                profitLabel.setFont(new Font("Verdana", Font.PLAIN, 40));
+
+                profitTab.add(profitLabel);
             }
 
+            columnNames = new String[]{"Rank", "Name", "Sales (zł)"};
             // Employee Ranking tab
             {
                 employeeTab = new JPanel();
@@ -196,7 +220,7 @@ public class ProfitSummaryPanel extends JPanel {
 
                 Object[][] employeeArray = new Object[employeeListDay.size()][];
                 employeeArray = employeeListDay.toArray(employeeArray);
-                employeeRanking = new JTable(employeeArray, new String[] {"Name", "Sales"});
+                employeeRanking = new JTable(employeeArray, columnNames);
 
                 erScroll = new JScrollPane(employeeRanking);
                 employeeRanking.setFillsViewportHeight(true);
@@ -211,7 +235,7 @@ public class ProfitSummaryPanel extends JPanel {
 
                 Object[][] supplierArray = new Object[supplierListDay.size()][];
                 supplierArray = supplierListDay.toArray(supplierArray);
-                supplierRanking = new JTable(supplierArray, new String[] {"Name", "Sales"});
+                supplierRanking = new JTable(supplierArray, columnNames);
 
                 srScroll = new JScrollPane(supplierRanking);
                 supplierRanking.setFillsViewportHeight(true);
@@ -219,7 +243,7 @@ public class ProfitSummaryPanel extends JPanel {
                 supplierTab.add(srScroll);
             }
 
-            tabbedPane.addTab("Profit Summary", profitTab);
+            tabbedPane.addTab("Profits", profitTab);
             tabbedPane.addTab("Employee Ranking", employeeTab);
             tabbedPane.addTab("Supplier Ranking", supplierTab);
 
@@ -238,6 +262,8 @@ public class ProfitSummaryPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 changeFilterLabel(dayString);
+
+                changeProfitLabel(dayProfit + " zł");
                 changeEmployeeFilter(employeeListDay);
                 changeSupplierFilter(supplierListDay);
             }
@@ -246,6 +272,8 @@ public class ProfitSummaryPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 changeFilterLabel(monthString);
+
+                changeProfitLabel(monthProfit + " zł");
                 changeEmployeeFilter(employeeListMonth);
                 changeSupplierFilter(supplierListMonth);
             }
@@ -254,6 +282,8 @@ public class ProfitSummaryPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 changeFilterLabel(quarterString);
+
+                changeProfitLabel(quarterProfit + " zł");
                 changeEmployeeFilter(employeeListQuarter);
                 changeSupplierFilter(supplierListQuarter);
             }
@@ -262,6 +292,8 @@ public class ProfitSummaryPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 changeFilterLabel(yearString);
+
+                changeProfitLabel(yearProfit + " zł");
                 changeEmployeeFilter(employeeListYear);
                 changeSupplierFilter(supplierListYear);
             }
@@ -270,17 +302,18 @@ public class ProfitSummaryPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 changeFilterLabel(allTimeString);
+
+                changeProfitLabel(allTimeProfit + " zł");
                 changeEmployeeFilter(employeeListAllTime);
                 changeSupplierFilter(supplierListAllTime);
             }
         });
-
     }
 
     private void changeEmployeeFilter(ArrayList<Object[]> list) {
         Object[][] employeeArray = new Object[list.size()][];
         employeeArray = list.toArray(employeeArray);
-        employeeRanking = new JTable(employeeArray, new String[] {"Name", "Sales"});
+        employeeRanking = new JTable(employeeArray, columnNames);
 
         employeeTab.remove(0);
         erScroll = new JScrollPane(employeeRanking);
@@ -294,7 +327,7 @@ public class ProfitSummaryPanel extends JPanel {
     private void changeSupplierFilter(ArrayList<Object[]> list) {
         Object[][] supplierArray = new Object[list.size()][];
         supplierArray = list.toArray(supplierArray);
-        supplierRanking = new JTable(supplierArray, new String[] {"Name", "Sales"});
+        supplierRanking = new JTable(supplierArray, columnNames);
 
         supplierTab.remove(0);
         srScroll = new JScrollPane(supplierRanking);
@@ -309,6 +342,12 @@ public class ProfitSummaryPanel extends JPanel {
         filterLabel.setText(label);
         sidebar.revalidate();
         sidebar.repaint();
+    }
+
+    private void changeProfitLabel(String label) {
+        profitLabel.setText(label);
+        profitTab.revalidate();
+        profitTab.repaint();
     }
 
 }
