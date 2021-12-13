@@ -174,10 +174,15 @@ public class DatabaseEndpoint extends Thread {
         session.close();
         return p;
     }
-//
     public static void closeConnection(){
         factory.close();
         System.out.println("closing works");
     }
 
+    public void addInvoiceEntity(InvoiceEntity invoiceEntity) {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        session.save(invoiceEntity);
+        session.getTransaction().commit();
+    }
 }

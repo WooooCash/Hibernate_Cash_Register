@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class OrderDashboard extends JFrame {
+    private InvoiceEntity invoiceEntity = new InvoiceEntity();
+
     private Application app;
     private JPanel mainPanel;
     private JTextField searchProductsField;
@@ -194,6 +196,10 @@ public class OrderDashboard extends JFrame {
                         options[1]);
 
                 if (result == 0) {
+//                    invoiceEntity.setTaxamount();
+//                    invoiceEntity.setNetprice();
+                    databaseEndpoint.addInvoiceEntity(invoiceEntity);
+
                     long id_of_employee = (long) app.getApp().getCurrentUserId();
                     //                    id 404, because if it's default
                     long order_id = databaseEndpoint.addOrderEntity(
@@ -201,7 +207,7 @@ public class OrderDashboard extends JFrame {
                             1,
                             "gotowka",
                             404,
-                            404,
+                            invoiceEntity.getInvoiceId(),
                             404,
                             id_of_employee
                     );
@@ -251,6 +257,13 @@ public class OrderDashboard extends JFrame {
             sum += (float) ( productListInOrder.get(i).getPrice() * Float.valueOf( String.valueOf(productAmount.get(i))));
         sum = BigDecimal.valueOf(sum).setScale(2, RoundingMode.HALF_UP).floatValue();
         return sum;
+    }
+
+    public void addInvoice(String nip, String firstName, String lastName, String address) {
+        invoiceEntity.setNip(Long.parseLong(nip));
+        invoiceEntity.setFirstname(firstName);
+        invoiceEntity.setLastname(lastName);
+        invoiceEntity.setAddress(address);
     }
 }
 
