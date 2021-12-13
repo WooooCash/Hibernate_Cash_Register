@@ -11,32 +11,22 @@ public class Invoice extends Container {
 
         JLabel niplabel = new JLabel("NIP: ");
         add(niplabel);
-
         JTextField niptext = new JTextField(10);
         add(niptext);
-
         JLabel firstNameLabel = new JLabel("First Name: ");
         add(firstNameLabel);
-
         JTextField firstNameText = new JTextField(10);
         add(firstNameText);
-
         JLabel lastNameLabel = new JLabel("Last Name: ");
         add(lastNameLabel);
-
         JTextField lastNameText = new JTextField(10);
         add(lastNameText);
-
         JLabel addressLabel = new JLabel("Address: ");
         add(addressLabel);
-
         JTextField addressText = new JTextField(10);
         add(addressText);
-
         JButton okButton = new JButton("OK");
         add(okButton);
-
-        // validate nip inputs for 10 numbers only
         niptext.addKeyListener(new java.awt.event.KeyAdapter() {
                                    public void keyTyped(java.awt.event.KeyEvent evt) {
                                        char c = evt.getKeyChar();
