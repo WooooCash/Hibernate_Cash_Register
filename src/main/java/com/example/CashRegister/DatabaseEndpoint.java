@@ -4,14 +4,9 @@ package com.example.CashRegister;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.criterion.Order;
 import org.hibernate.query.Query;
 
-import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.*;
-import java.util.function.Supplier;
 
 public class DatabaseEndpoint extends Thread {
     private static DatabaseEndpoint databaseEndpoint = new DatabaseEndpoint();
@@ -373,5 +368,23 @@ public class DatabaseEndpoint extends Thread {
         session.beginTransaction();
         session.update(invoiceEntity);
         session.getTransaction().commit();
+    }
+    public ArrayList<AssistanceRequestClassForEditing> getCustomEmployeeAssistanceEntity() {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        String sql = "select e.name, e.lastname, e.employeeId, ar.description, ar.datetimeofrequest " +
+                "from EmployeeassistancerequestEntity ea, EmployeeEntity e, AssistancerequestEntity ar " +
+                "where ea.requestId = ar.requestId and e.employeeId=ea.employeeId";
+        Query query = session.createQuery(sql);
+        List<Object[]> output = query.list();
+        ArrayList<AssistanceRequestClassForEditing> listOfCustomAssistanceRequest = new ArrayList<>();
+        if( output.isEmpty() )
+            listOfCustomAssistanceRequest = null;
+        else
+            for( int i = 0 ; i < output.size() ; ++i )
+                listOfCustomAssistanceRequest.add( new AssistanceRequestClassForEditing( output.get(i) ));
+
+        session.close();
+        return listOfCustomAssistanceRequest;
     }
 }
