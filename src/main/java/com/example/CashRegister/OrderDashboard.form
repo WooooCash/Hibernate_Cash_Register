@@ -85,7 +85,7 @@
                   </component>
                 </children>
               </grid>
-              <grid id="28ef7" layout-manager="GridLayoutManager" row-count="5" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="28ef7" layout-manager="GridLayoutManager" row-count="6" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="10" left="10" bottom="10" right="10"/>
                 <constraints>
                   <splitpane position="right"/>
@@ -95,7 +95,7 @@
                 <children>
                   <component id="97ad4" class="javax.swing.JList" binding="allProductsInOrder">
                     <constraints>
-                      <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                      <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="50"/>
                       </grid>
                     </constraints>
@@ -111,36 +111,45 @@
                       <text value="Sum:"/>
                     </properties>
                   </component>
+                  <component id="b0f3" class="javax.swing.JButton" binding="addMembershipCardButton">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Add membershipCard"/>
+                    </properties>
+                  </component>
+                  <component id="a014c" class="javax.swing.JButton" binding="addInvoiceButton" default-binding="true">
+                    <constraints>
+                      <grid row="4" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Add Invoice"/>
+                    </properties>
+                  </component>
+                  <component id="9354e" class="javax.swing.JButton" binding="addCouponButton" default-binding="true">
+                    <constraints>
+                      <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="Add Coupon"/>
+                    </properties>
+                  </component>
+                  <component id="f3012" class="javax.swing.JButton" binding="finaliseOrderButton" default-binding="true">
+                    <constraints>
+                      <grid row="5" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <background color="-16719570"/>
+                      <text value="Finalise Order"/>
+                    </properties>
+                  </component>
                   <component id="e4e10" class="javax.swing.JLabel" binding="sumValueLabel">
                     <constraints>
                       <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
                       <text value=""/>
-                    </properties>
-                  </component>
-                  <component id="f3012" class="javax.swing.JButton" binding="finaliseOrderButton" default-binding="true">
-                    <constraints>
-                      <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <text value="Finalise Order"/>
-                    </properties>
-                  </component>
-                  <component id="9354e" class="javax.swing.JButton" binding="addCouponButton" default-binding="true">
-                    <constraints>
-                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <text value="Add Coupon"/>
-                    </properties>
-                  </component>
-                  <component id="a014c" class="javax.swing.JButton" binding="addInvoiceButton" default-binding="true">
-                    <constraints>
-                      <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <text value="Add Invoice"/>
                     </properties>
                   </component>
                 </children>

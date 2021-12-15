@@ -32,6 +32,7 @@ public class OrderDashboard extends JFrame {
     private double percentDiscount = BigDecimal.valueOf(0).setScale(2, RoundingMode.HALF_UP).floatValue();
     private double permaDiscount = BigDecimal.valueOf(0).setScale(2, RoundingMode.HALF_UP).floatValue();
     private long couponID = -1;
+    private long membershipAccountId = -1;
     private JButton finaliseOrderButton;
     private JButton addCouponButton;
     private JLabel unitscaleLabel;
@@ -40,6 +41,7 @@ public class OrderDashboard extends JFrame {
     private JRadioButton cardRadioButton;
     private JFormattedTextField amountOfCash;
     private JLabel amountOfCashLabel;
+    private JButton addMembershipCardButton;
     DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
     private ArrayList<ProductEntity> orderProducts;
     private ArrayList<Integer> productAmount;
@@ -50,6 +52,10 @@ public class OrderDashboard extends JFrame {
         final ArrayList<ProductEntity>[] productList = new ArrayList[]{new ArrayList<>(0)};
 
         ArrayList<ProductEntity> productOrigin = databaseEndpoint.getAllProducts();
+//        ArrayList<ProductEntity> productOrigin = new ArrayList<>();
+//        productOrigin.add( create(1, "micha ryzu", "kg", 12.32, 200, "N", 1,231) );
+//        productOrigin.add( create(2, "worek ziemniorow", "kg", 12.14, 10, "N", 1,2311) );
+
         ArrayList<String> orderNamings = new ArrayList<String>(0);
         productAmount = new ArrayList<Integer>(0);
 
@@ -218,6 +224,8 @@ public class OrderDashboard extends JFrame {
                 }
                 if( amountOfCash.isEditable() ) {
                     typeOfTransaction = "gotowka";
+                    if( amountOfCash.getText().equals( "" ) || amountOfCash.getText().equals( "." ) )
+                        amountOfCash.setText( "0" );
                     System.out.println( Float.valueOf( amountOfCash.getText() ) );
                     float sumOfCash = BigDecimal.valueOf( Float.valueOf( amountOfCash.getText() ) ).
                             setScale(2, RoundingMode.HALF_UP).floatValue();
@@ -246,11 +254,12 @@ public class OrderDashboard extends JFrame {
                     long idOfEmployee = (long) app.getApp().getCurrentUserId();
                     //                    id 404, because if it's default
                     long couponIdForForm = couponID == -1 ? 404 : couponID;
+                    long membershipAccount = membershipAccountId == -1 ? 404 : membershipAccountId;
                     long order_id = databaseEndpoint.addOrderEntity(
                             (double) computedOrderSum,
                             1,
                             typeOfTransaction,
-                            404,
+                            membershipAccount,
                             invoiceID,
                             couponIdForForm,
                             idOfEmployee
@@ -283,6 +292,23 @@ public class OrderDashboard extends JFrame {
                         databaseEndpoint.updateInvoiceEntity(invoiceEntity);
                     }
                     mainFrame.destroyOrder();
+                }
+            }
+        });
+        addMembershipCardButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(membershipAccountId == -1) {
+                    JDialog dialog = new JDialog(OrderDashboard.this, "MebershipCard");
+                    dialog.setContentPane(new MembershipCardPanel(dialog, OrderDashboard.this));
+                    dialog.pack();
+                    dialog.setLocationRelativeTo(null);
+                    dialog.setVisible(true);
+                }
+                else {
+                    membershipAccountId = -1;
+                    addMembershipCardButton.setForeground(Color.black);
+                    addMembershipCardButton.setText("Add membership card");
                 }
             }
         });
@@ -387,6 +413,11 @@ public class OrderDashboard extends JFrame {
         addCouponButton.setText("Remove coupon with code: " + couponCode);
         addCouponButton.setForeground(Color.red);
 
+    }
+    public void setMembershipCard(MembershipaccountEntity mE){
+        addMembershipCardButton.setText("Remove account with code: " + mE.getPhonenumber());
+        addMembershipCardButton.setForeground(Color.red);
+        membershipAccountId = mE.getMembershipId();
     }
 
     public void addInvoice(String nip, String firstName, String lastName, String address) {

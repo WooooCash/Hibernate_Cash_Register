@@ -404,4 +404,28 @@ public class DatabaseEndpoint extends Thread {
         return output.get(0).getName();
     }
 
+    public MembershipaccountEntity getMembershipAccountEntity(long phoneNumber){
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        String sql = "from MembershipaccountEntity ma where :id=ma.phonenumber";
+        Query query = session.createQuery(sql);
+        query.setParameter("id", phoneNumber);
+        if( query.list().isEmpty() ) {
+            session.close();
+            return null;
+        }
+        MembershipaccountEntity mA= (MembershipaccountEntity) query.list().get(0);
+//        MembershipaccountEntity MA;
+//        String returnStatement;
+//        if( !result.isEmpty() ) {
+//            MA = (CouponEntity) query.list().get(0);
+//            returnStatement = "" + (coupon.getTypeofcoupon().equals("P") ? "procent " : "liczba ") +
+//                    coupon.getCouponamount() + " " + coupon.getCouponId();
+//        }
+//        else{
+//            returnStatement = "";
+//        }
+        session.close();
+        return mA;
+    }
 }
