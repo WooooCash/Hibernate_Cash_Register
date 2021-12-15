@@ -66,7 +66,6 @@ public class Application {
     public void sendAssistanceRequest(String description) {
         //send this description to database
         databaseEndpoint.saveNewAssistanceRequest(currentUserId, description);
-        System.out.println("Description: " + description);
         mainFrame.setDashboardPage(0);
     }
 
@@ -79,7 +78,6 @@ public class Application {
         String dotw = dt.format(dotwFormatter);
         int    hour = Integer.parseInt(dt.format(hourFormatter));
 
-        System.out.println("day+hour: " + dotw + " " + hour);
         switch(dotw) {
             case "Mon.":
                 if (hour >= 7 && hour < 17) managerAvailable = true;

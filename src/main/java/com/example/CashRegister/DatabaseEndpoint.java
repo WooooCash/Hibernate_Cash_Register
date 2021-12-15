@@ -55,7 +55,6 @@ public class DatabaseEndpoint extends Thread {
         session.beginTransaction();
         String sql = "select e.employeeId, e.gender from EmployeeEntity e where lower(e.name)=:name and e.password=:password";
         Query query = session.createQuery(sql);
-        //System.out.println(query);
         query.setParameter("name", name.toLowerCase( Locale.ROOT ) )
                 .setParameter("password", password);
         List list = query.list();
