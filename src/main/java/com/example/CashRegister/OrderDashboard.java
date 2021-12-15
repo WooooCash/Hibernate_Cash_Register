@@ -240,7 +240,9 @@ public class OrderDashboard extends JFrame {
                         );
                     invoiceEntity.setTaxamount(databaseEndpoint.getTaxAmount(order_id));
                     invoiceEntity.setNetprice((float) (computeOrderSum(orderProducts, productAmount) - invoiceEntity.getTaxamount()));
-                    databaseEndpoint.updateInvoiceEntity(invoiceEntity);
+                    if (invoiceCreated) {
+                        databaseEndpoint.updateInvoiceEntity(invoiceEntity);
+                    }
                     mainFrame.destroyOrder();
                 }
             }
