@@ -378,13 +378,10 @@ public class OrderDashboard extends JFrame {
         for(int i = 0 ; i < productListInOrder.size() ; ++i)
             sum += (float) ( productListInOrder.get(i).getPrice()
                     * Float.valueOf( String.valueOf( productAmount.get( i ) ) ) );
-        System.out.println("\n\n\n\n\nlollll" + sum);
         sum = sum * (float)( (100.0f - percentDiscount) / 100.0f );
-        System.out.println(sum);
         sum = sum - (float)permaDiscount;
-        System.out.println(sum);
-        System.out.println(permaDiscount);
-        System.out.println(percentDiscount);
+        if(sum <= 0)
+            sum = 0.0f;
         sum = BigDecimal.valueOf(sum).setScale(2, RoundingMode.HALF_UP).floatValue();
         return sum;
     }
