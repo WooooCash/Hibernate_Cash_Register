@@ -2,12 +2,9 @@ package com.example.CashRegister;
 
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -26,16 +23,17 @@ public class AssistanceRequestReceiverPanel extends JPanel{
     JLabel lastName;
     JLabel dateOfRequest;
     JLabel description;
+    JLabel mgrAvailableLabel;
 
     DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
     public AssistanceRequestReceiverPanel(MainFrame mainFrame){
         app = Application.getApp();
+
         this.setLayout(new BorderLayout());
         ArrayList<AssistanceRequestClassForEditing> assistanceRequestList =
                 databaseEndpoint.getCustomEmployeeAssistanceEntity();
         Collections.sort(assistanceRequestList, new DateComparator());
-//        assistanceRequestList.add(createAssistanceRequest(new Date(2011, 12, 12), 1, "Cosik dupa dupa, hihihihi"));
-//        assistanceRequestList.add(createAssistanceRequest(new Date(), 2, "Lolul"));
+
         ArrayList<String> stringsToShow = new ArrayList<>();
         for(int i = 0 ; i < assistanceRequestList.size() ; ++i){
             LocalDate date = assistanceRequestList.get( i ).getDateOfRequest().toInstant()
@@ -56,7 +54,7 @@ public class AssistanceRequestReceiverPanel extends JPanel{
         name.setBackground(Color.red);
         lastName = new JLabel("Yas");
         lastName.setBackground(Color.blue);
-        description = new JLabel("Kp");
+        description = new JLabel("Kp", SwingConstants.CENTER);
         description.setBackground(Color.pink);
         dateOfRequest = new JLabel("cC");
         name.setBackground(Color.cyan);
@@ -102,6 +100,20 @@ public class AssistanceRequestReceiverPanel extends JPanel{
         rightPanel.add( l12, BorderLayout.NORTH );
         rightPanel.add(dateOfRequest, BorderLayout.SOUTH);
         rightPanel.add(description, BorderLayout.CENTER);
+
+        JPanel mgr = new JPanel();
+        mgr.setPreferredSize(new Dimension(0, 50));
+        mgrAvailableLabel = new JLabel();
+        String managerName = databaseEndpoint.getManagerName(app.getCurrentUserId());
+        if (managerName == null) {
+            mgr.setBackground(Color.gray);
+        } else {
+            mgrAvailableLabel.setText("Your manager " + managerName + " is available");
+            mgr.setBackground(Color.green);
+            mgr.add(mgrAvailableLabel, SwingConstants.CENTER);
+        }
+
+        leftPanel.add(mgr, BorderLayout.SOUTH);
 
         this.add(leftPanel, BorderLayout.WEST);
         this.add(rightPanel, BorderLayout.CENTER);

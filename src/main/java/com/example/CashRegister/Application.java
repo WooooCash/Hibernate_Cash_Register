@@ -44,7 +44,7 @@ public class Application {
             System.out.println("Successfully logged in as: " + username);
             currentUserId = loginInfo[1];
 //             #TODO uncomment for database connection
-            int isEmployeeManager = databaseEndpoint.basicEmployeeReturn0ManagerReturn1(username);
+            int isEmployeeManager = databaseEndpoint.basicEmployeeReturn0ManagerReturn1(currentUserId);
             mainFrame.loggedIn(username, isEmployeeManager);// status indicates if succesfully logged in and what privildedges are granted to the user
             //mainFrame.loggedIn(username, 0);// status indicates if succesfully logged in and what privildedges are granted to the user
 
