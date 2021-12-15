@@ -1,5 +1,8 @@
 package com.example.CashRegister;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Application {
 //    needed for closing application database shutdown
 //      #TODO uncomment for database connection
@@ -12,6 +15,7 @@ public class Application {
 
     private static Application app = new Application();
     private int currentUserId = -1;
+    private boolean managerAvailable = false;
 //      #TODO uncomment for database connection
     private DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
     MainFrame mainFrame;
@@ -47,6 +51,7 @@ public class Application {
             int isEmployeeManager = databaseEndpoint.basicEmployeeReturn0ManagerReturn1(currentUserId);
             mainFrame.loggedIn(username, isEmployeeManager);// status indicates if succesfully logged in and what privildedges are granted to the user
             //mainFrame.loggedIn(username, 0);// status indicates if succesfully logged in and what privildedges are granted to the user
+            setManagerAvailable();
 
             return true;
         }
@@ -64,7 +69,37 @@ public class Application {
         System.out.println("Description: " + description);
         mainFrame.setDashboardPage(0);
     }
+
+    private void setManagerAvailable() {
+        LocalDateTime dt = LocalDateTime.now();
+
+        DateTimeFormatter dotwFormatter = DateTimeFormatter.ofPattern("E");
+        DateTimeFormatter hourFormatter = DateTimeFormatter.ofPattern("HH");
+
+        String dotw = dt.format(dotwFormatter);
+        int    hour = Integer.parseInt(dt.format(hourFormatter));
+
+        System.out.println("day+hour: " + dotw + " " + hour);
+        switch(dotw) {
+            case "Mon.":
+                if (hour >= 7 && hour < 17) managerAvailable = true;
+                break;
+            case "Tue.":
+                if (hour >= 8 && hour < 17) managerAvailable = true;
+                break;
+            case "Wed.":
+                System.out.println("Its wednesday my dudes");
+                if (hour >= 8 && hour < 15) managerAvailable = true;
+                break;
+            case "Thu.":
+                if (hour >= 15 && hour < 20) managerAvailable = true;
+            case "Fri.":
+                if (hour >= 8 && hour < 12) managerAvailable = true;
+        }
+    }
+
     public int getCurrentUserId(){
         return currentUserId;
     }
+    public boolean getManagerAvailable() { return managerAvailable; }
 }

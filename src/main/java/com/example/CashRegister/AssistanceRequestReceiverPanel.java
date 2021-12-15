@@ -108,8 +108,13 @@ public class AssistanceRequestReceiverPanel extends JPanel{
         if (managerName == null) {
             mgr.setBackground(Color.gray);
         } else {
-            mgrAvailableLabel.setText("Your manager " + managerName + " is available");
-            mgr.setBackground(Color.green);
+            if (app.getManagerAvailable()) {
+                mgrAvailableLabel.setText("Your manager " + managerName + " is available");
+                mgr.setBackground(Color.green);
+            } else {
+                mgrAvailableLabel.setText("Your manager " + managerName + " is not available");
+                mgr.setBackground(Color.red);
+            }
             mgr.add(mgrAvailableLabel, SwingConstants.CENTER);
         }
 

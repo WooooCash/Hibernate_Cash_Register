@@ -103,7 +103,7 @@ public class ProfitSummaryPanel extends JPanel {
         {
             dayString = "Day: " + localDT.format(dayFormat);
             monthString = "Month: " + localDT.format(monthFormat);
-            quarterString = "Quarter: Q" + (int)Math.ceil(Integer.parseInt(localDT.format(monthNumFormat))*4/12.0) +
+            quarterString = "Quarter: Q" + (int)Math.ceil(Integer.parseInt(localDT.format(monthNumFormat))/3.0) +
                     " " + localDT.format(yearFormat);
             yearString = "Year: " + localDT.format(yearFormat);
             allTimeString = "All Time";

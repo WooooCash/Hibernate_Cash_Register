@@ -60,11 +60,13 @@ public class AssistanceRequestPanel extends JPanel {
         if (managerName == null) {
             managerAvailablePanel.setBackground(Color.gray);
         } else {
-
-
-            managerAvailablePanel.setBackground(Color.green);
-
-            managerAvailableLabel.setText("Your manager " + managerName + " is available");
+            if (app.getManagerAvailable()) {
+                managerAvailablePanel.setBackground(Color.green);
+                managerAvailableLabel.setText("Your manager " + managerName + " is available");
+            } else {
+                managerAvailablePanel.setBackground(Color.red);
+                managerAvailableLabel.setText("Your manager " + managerName + " is not available");
+            }
             managerAvailablePanel.add(managerAvailableLabel, SwingConstants.CENTER);
         }
         bottomPanel.add(managerAvailablePanel, BorderLayout.SOUTH);
