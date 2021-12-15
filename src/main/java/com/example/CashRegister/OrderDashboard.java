@@ -277,6 +277,9 @@ public class OrderDashboard extends JFrame {
 
                         }
                     }
+                    if (invoiceCreated) {
+                        databaseEndpoint.updateInvoiceEntity(invoiceEntity);
+                    }
                     mainFrame.destroyOrder();
                 }
             }
