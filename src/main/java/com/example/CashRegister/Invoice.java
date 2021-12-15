@@ -35,6 +35,8 @@ public class Invoice extends Container {
                                                (c == KeyEvent.VK_DELETE))) {
                                            evt.consume();
                                        }
+                                       if(niptext.getText().length() >= 10)
+                                           evt.consume();
                                    }
                                }
         );

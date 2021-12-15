@@ -37,7 +37,7 @@ public class CouponCode extends Container {
                     JOptionPane.showMessageDialog(null, "No coupon in database. Try again");
                 }
                 else {
-                    frame.setCoupon(outputFromDatabase);
+                    frame.setCoupon(outputFromDatabase, couponField.getText());
                     JOptionPane.showMessageDialog(null, "Coupon applied :D");
                     frame.actualizeOverallSum();
                 }
