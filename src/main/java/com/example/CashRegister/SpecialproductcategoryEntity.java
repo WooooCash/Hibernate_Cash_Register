@@ -4,6 +4,7 @@ import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.sql.Time;
+import java.util.Date;
 
 @Entity
 @javax.persistence.Table(name = "SPECIALPRODUCTCATEGORY", schema = "SBD_ST_PS11_4", catalog = "")
@@ -44,27 +45,27 @@ public class SpecialproductcategoryEntity {
         this.description = description;
     }
 
-    private Time begindate;
+    private Date begindate;
 
     @Basic
     @javax.persistence.Column(name = "BEGINDATE", nullable = false)
-    public Time getBegindate() {
+    public Date getBegindate() {
         return begindate;
     }
 
-    public void setBegindate(Time begindate) {
+    public void setBegindate(Date begindate) {
         this.begindate = begindate;
     }
 
-    private Time enddate;
+    private Date enddate;
 
     @Basic
     @javax.persistence.Column(name = "ENDDATE", nullable = false)
-    public Time getEnddate() {
+    public Date getEnddate() {
         return enddate;
     }
 
-    public void setEnddate(Time enddate) {
+    public void setEnddate(Date enddate) {
         this.enddate = enddate;
     }
 
