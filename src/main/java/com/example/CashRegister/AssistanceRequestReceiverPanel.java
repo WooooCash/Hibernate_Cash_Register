@@ -50,15 +50,16 @@ public class AssistanceRequestReceiverPanel extends JPanel{
 
         requestList = new JList(stringsToShow.toArray());
 //        requestList.setListData();
-        name = new JLabel("Huhi");
+        name = new JLabel("Name");
         name.setBackground(Color.red);
-        lastName = new JLabel("Yas");
+        lastName = new JLabel("Last name");
         lastName.setBackground(Color.blue);
-        description = new JLabel("Kp", SwingConstants.CENTER);
+        description = new JLabel("Description", SwingConstants.CENTER);
         description.setBackground(Color.pink);
-        dateOfRequest = new JLabel("cC");
+        dateOfRequest = new JLabel("Date");
         name.setBackground(Color.cyan);
         requestList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        requestList.setSelectedIndex(0);
         requestList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged( ListSelectionEvent e ) {
@@ -72,7 +73,6 @@ public class AssistanceRequestReceiverPanel extends JPanel{
                 lastName.setText( tempForChangingLabels.getLastname() );
                 description.setText( String.format(html, 200, tempForChangingLabels.getDescription() ) );
                 dateOfRequest.setText( date.getDayOfMonth() + "-" + date.getMonth() + "-" + date.getYear() );
-
             }
         });
         leftPanel = new JPanel();
