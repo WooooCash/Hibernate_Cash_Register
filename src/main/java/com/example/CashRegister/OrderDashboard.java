@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.xml.crypto.Data;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -202,6 +203,7 @@ public class OrderDashboard extends JFrame {
                     couponID = -1;
                     actualizeOverallSum();
                     addCouponButton.setText("Add coupon");
+                    addCouponButton.setForeground(Color.black);
                 }
             }
         });
@@ -287,13 +289,21 @@ public class OrderDashboard extends JFrame {
         addInvoiceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JDialog dialog = new JDialog(OrderDashboard.this, "Invoice");
-                dialog.setContentPane(new Invoice(dialog, OrderDashboard.this));
-                dialog.pack();
-                dialog.setLocationRelativeTo(null);
-                dialog.setVisible(true);
+                if (!invoiceCreated){
+                    JDialog dialog = new JDialog(OrderDashboard.this, "Invoice");
+                    dialog.setContentPane(new Invoice(dialog, OrderDashboard.this));
+                    dialog.pack();
+                    dialog.setLocationRelativeTo(null);
+                    dialog.setVisible(true);
+                }
+                else {
+                    invoiceCreated = false;
+                    addInvoiceButton.setText("Add Invoice");
+                    addInvoiceButton.setForeground(Color.black);
+                }
             }
         });
+
         cashRadioButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -305,10 +315,7 @@ public class OrderDashboard extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 amountOfCashLabel.setText( "Cash not available" );
-                System.out.println(amountOfCash.isEditable());
                 amountOfCash.setEditable(false);
-                inputForProductAmount.isEditable();
-                System.out.println(amountOfCash.isEditable());
             }
         });
         amountOfCash.addKeyListener(new KeyAdapter() {
@@ -318,7 +325,6 @@ public class OrderDashboard extends JFrame {
                 char c = e.getKeyChar();
                 char dot = '.';
                 if( Character.compare(dot, c) == 0 ) {
-//                    System.out.println("zawiera: "+amountOfCash.getText().contains("."));
                     if (amountOfCash.getText().contains("."))
                         e.consume();
                 }
@@ -326,7 +332,6 @@ public class OrderDashboard extends JFrame {
                     e.consume();
             }
         });
-
     }
     //    private DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
     public ProductEntity create(long id, String name, String unitScale, double Price, long instock,
@@ -365,7 +370,7 @@ public class OrderDashboard extends JFrame {
     public void actualizeOverallSum(){
         sumValueLabel.setText( "" + computeOrderSum( orderProducts, productAmount ) + "zł");
     }
-    public void setCoupon(String couponTextFromDatabase){
+    public void setCoupon(String couponTextFromDatabase, String couponCode){
         String[] output = couponTextFromDatabase.split(" ");
         if( output[0].equals( "procent" ) ) {
             percentDiscount = Double.parseDouble(output[1]);
@@ -379,7 +384,8 @@ public class OrderDashboard extends JFrame {
             permaDiscount = BigDecimal.valueOf(permaDiscount).setScale(2, RoundingMode.HALF_UP).floatValue();
             System.out.println("staloliczbowa:" + permaDiscount);
         }
-        addCouponButton.setText("Remove coupon");
+        addCouponButton.setText("Remove coupon with code: " + couponCode);
+        addCouponButton.setForeground(Color.red);
 
     }
 
@@ -389,6 +395,9 @@ public class OrderDashboard extends JFrame {
         invoiceEntity.setLastname(lastName);
         invoiceEntity.setAddress(address);
         invoiceCreated = true;
+        addInvoiceButton.setText("Remove invoice with ID:" + invoiceEntity.getNip());
+        addInvoiceButton.setForeground(Color.red);
+
     }
 }
 
