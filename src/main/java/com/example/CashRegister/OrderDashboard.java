@@ -85,7 +85,8 @@ public class OrderDashboard extends JFrame {
             productList[0].clear();
             if(search != null) {
                 for (int i = 0; i < productOrigin.size(); ++i) {
-                    if (productOrigin.get(i).getName().toLowerCase(Locale.ROOT).contains(search)) {
+                    if (productOrigin.get(i).getName().toLowerCase(Locale.ROOT)
+                            .contains(search.toLowerCase(Locale.ROOT))) {
                         searchingList.add(productOrigin.get(i).getName());
                         productList[0].add(productOrigin.get(i));
                     }
