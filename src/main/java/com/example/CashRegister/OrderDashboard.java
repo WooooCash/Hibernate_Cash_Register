@@ -35,6 +35,10 @@ public class OrderDashboard extends JFrame {
     private JButton addCouponButton;
     private JLabel unitscaleLabel;
     private JButton addInvoiceButton;
+    private JRadioButton cashRadioButton;
+    private JRadioButton cardRadioButton;
+    private JFormattedTextField amountOfCash;
+    private JLabel amountOfCashLabel;
     DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
     private ArrayList<ProductEntity> orderProducts;
     private ArrayList<Integer> productAmount;
@@ -50,6 +54,10 @@ public class OrderDashboard extends JFrame {
 
         orderProducts = new ArrayList<ProductEntity>(0);
 
+        ButtonGroup group = new ButtonGroup();
+        group.add(cashRadioButton);
+        group.add(cardRadioButton);
+        cashRadioButton.setSelected(true);
 //        here importing data for product
 //        productOrigin.add(create(1, "Cosik", "kg",0.5, 100,"Y",2, 500100300));
 //        productOrigin.add(create(2, "jakos", "lol",0.7, 200, "N",3, 120123123));
@@ -200,36 +208,49 @@ public class OrderDashboard extends JFrame {
         finaliseOrderButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String typeOfTransaction = "";
+                float computedOrderSum = computeOrderSum(orderProducts, productAmount);
                 if(orderProducts.size() == 0) {
                     JOptionPane.showMessageDialog(null, "No products in Order. Add something");
                     return;
                 }
+                if( amountOfCash.isEditable() ) {
+                    typeOfTransaction = "gotowka";
+                    System.out.println( Float.valueOf( amountOfCash.getText() ) );
+                    float sumOfCash = BigDecimal.valueOf( Float.valueOf( amountOfCash.getText() ) ).
+                            setScale(2, RoundingMode.HALF_UP).floatValue();
+
+                    if( sumOfCash < computedOrderSum ){
+                        JOptionPane.showMessageDialog(null,
+                                "Too small amount of cash to cover the price of car",
+                                "Error while checking",
+                                JOptionPane.PLAIN_MESSAGE);
+                        return;
+                    }
+                }
+                else
+                    typeOfTransaction = "karta";
+
                 Object[] options = {"Send", "Cancel"};
                 int result = JOptionPane.showOptionDialog(null,
-                        "Are you sure you want to finalize Order?",
-                        "Request Confirmation",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE,
-                        null,
-                        options,
-                        options[1]);
-
+                        "Are you sure you want to finalize Order?","Request Confirmation",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+                        null, options, options[1]);
                 if (result == 0) {
                     if (invoiceCreated) {
                         databaseEndpoint.addInvoiceEntity(invoiceEntity);
                     }
-
                     int invoiceID = invoiceCreated ? (int) invoiceEntity.getInvoiceId() : 404;
                     long idOfEmployee = (long) app.getApp().getCurrentUserId();
                     //                    id 404, because if it's default
                     long couponIdForForm = couponID == -1 ? 404 : couponID;
                     long order_id = databaseEndpoint.addOrderEntity(
-                            (double) computeOrderSum(orderProducts, productAmount),
+                            (double) computedOrderSum,
                             1,
-                            "gotowka",
+                            typeOfTransaction,
                             404,
                             invoiceID,
-                            404,
+                            couponIdForForm,
                             idOfEmployee
                     );
                     for (int i = 0; i < orderProducts.size(); ++i)
@@ -239,8 +260,23 @@ public class OrderDashboard extends JFrame {
                                 order_id
                         );
                     invoiceEntity.setTaxamount(databaseEndpoint.getTaxAmount(order_id));
-                    invoiceEntity.setNetprice((float) (computeOrderSum(orderProducts, productAmount) - invoiceEntity.getTaxamount()));
+                    invoiceEntity.setNetprice((float) (computedOrderSum - invoiceEntity.getTaxamount()));
                     databaseEndpoint.updateInvoiceEntity(invoiceEntity);
+                    if( typeOfTransaction.equals("gotowka") ) {
+                        float sumOfCash = BigDecimal.valueOf(Float.valueOf(amountOfCash.getText())).
+                                setScale(2, RoundingMode.HALF_UP).floatValue();
+                        if ( sumOfCash > computedOrderSum) {
+                            float change = BigDecimal.valueOf(sumOfCash - computedOrderSum).
+                                    setScale(2, RoundingMode.HALF_UP).floatValue();
+                            JOptionPane.showMessageDialog(null,
+                                    "Cash from customer was equal: " + sumOfCash + "zl \n"+
+                                    "Cash from Order was equal: "+computedOrderSum + "zl \n"+
+                                    "Change: "+ (change) + "zl",
+                                    "Change",
+                                    JOptionPane.PLAIN_MESSAGE);
+
+                        }
+                    }
                     mainFrame.destroyOrder();
                 }
             }
@@ -255,6 +291,39 @@ public class OrderDashboard extends JFrame {
                 dialog.setVisible(true);
             }
         });
+        cashRadioButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                amountOfCashLabel.setText( "How much cash?" );
+                amountOfCash.setEditable(true);
+            }
+        });
+        cardRadioButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                amountOfCashLabel.setText( "Cash not available" );
+                System.out.println(amountOfCash.isEditable());
+                amountOfCash.setEditable(false);
+                inputForProductAmount.isEditable();
+                System.out.println(amountOfCash.isEditable());
+            }
+        });
+        amountOfCash.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                super.keyTyped(e);
+                char c = e.getKeyChar();
+                char dot = '.';
+                if( Character.compare(dot, c) == 0 ) {
+//                    System.out.println("zawiera: "+amountOfCash.getText().contains("."));
+                    if (amountOfCash.getText().contains("."))
+                        e.consume();
+                }
+                else if( !Character.isDigit(c) )
+                    e.consume();
+            }
+        });
+
     }
     //    private DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
     public ProductEntity create(long id, String name, String unitScale, double Price, long instock,

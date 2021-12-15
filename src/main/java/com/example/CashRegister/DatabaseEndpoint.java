@@ -368,6 +368,7 @@ public class DatabaseEndpoint extends Thread {
         session.beginTransaction();
         session.update(invoiceEntity);
         session.getTransaction().commit();
+        session.close();
     }
     public ArrayList<AssistanceRequestClassForEditing> getCustomEmployeeAssistanceEntity() {
         Session session = factory.getCurrentSession();
