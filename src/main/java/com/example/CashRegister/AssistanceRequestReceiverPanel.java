@@ -79,7 +79,7 @@ public class AssistanceRequestReceiverPanel extends JPanel{
         rightPanel.setLayout(new BorderLayout());
         String html = "<html><body style='width: %1spx'>%1s";
         String s = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean eu nulla urna. Donec sit amet risus nisl, a porta enim. Quisque luctus, ligula eu scelerisque gravida, tellus quam vestibulum urna, ut aliquet sapien purus sed erat. Pellentesque consequat vehicula magna, eu aliquam magna interdum porttitor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed sollicitudin sapien non leo tempus lobortis. Morbi semper auctor ipsum, a semper quam elementum a. Aliquam eget sem metus.";
-        leftPanel.setPreferredSize(new Dimension(200, 0));
+        leftPanel.setPreferredSize(new Dimension(300, 0));
 //        rightPanel.setPreferredSize(new Dimension(400, 400));
         rightPanel.setBackground(Color.orange);
 
