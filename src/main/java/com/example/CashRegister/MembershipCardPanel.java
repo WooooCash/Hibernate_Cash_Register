@@ -28,19 +28,20 @@ public class MembershipCardPanel extends Container {
                 System.out.println(membershipCardPhone.getText());
 //                DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
                 if (membershipCardPhone.getText().equals("")){
-                    JOptionPane.showMessageDialog(null, "No code inserted. Try again");
-                    dialog.dispose();
+                    JOptionPane.showMessageDialog(null, "No phone number inserted. Try again");
                     return;
                 }
                 long phoneNumber = Long.parseLong( membershipCardPhone.getText() );
 //                String outputFromDatabase = "cosik";
                 MembershipaccountEntity outputFromDatabase =  databaseEndpoint.getMembershipAccountEntity( phoneNumber );
-                if( outputFromDatabase.equals( "" ) ) {
-                    JOptionPane.showMessageDialog(null, "No coupon in database. Try again");
+                if( outputFromDatabase == null ) {
+                    JOptionPane.showMessageDialog(null,
+                            "This phone number is not in database. Try again");
+                    return;
                 }
                 else {
                     frame.setMembershipCard(outputFromDatabase);
-                    JOptionPane.showMessageDialog(null, "Coupon applied :D");
+                    JOptionPane.showMessageDialog(null, "Account found :D");
                     frame.actualizeOverallSum();
                 }
                 dialog.dispose();

@@ -415,16 +415,6 @@ public class DatabaseEndpoint extends Thread {
             return null;
         }
         MembershipaccountEntity mA= (MembershipaccountEntity) query.list().get(0);
-//        MembershipaccountEntity MA;
-//        String returnStatement;
-//        if( !result.isEmpty() ) {
-//            MA = (CouponEntity) query.list().get(0);
-//            returnStatement = "" + (coupon.getTypeofcoupon().equals("P") ? "procent " : "liczba ") +
-//                    coupon.getCouponamount() + " " + coupon.getCouponId();
-//        }
-//        else{
-//            returnStatement = "";
-//        }
         session.close();
         return mA;
     }

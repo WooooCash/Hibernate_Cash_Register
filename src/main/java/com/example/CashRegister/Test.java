@@ -17,7 +17,7 @@ import static java.lang.Thread.sleep;
 public class Test {
     //     #TODO testing database
 
-    public static DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
+//    public static DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
 //    public static class ShutdownConnectionClose extends Thread {
 //        public void run() {
 //            databaseEndpoint.closeConnection();

@@ -46,7 +46,7 @@ public class Application {
        if( loginInfo[0] == 1){
 //        if ( username.equals(realUser) && password.equals(realPass) ) {
             System.out.println("Successfully logged in as: " + username);
-//            currentUserId = loginInfo[1];
+            currentUserId = loginInfo[1];
 //             #TODO uncomment for database connection
             int isEmployeeManager = databaseEndpoint.basicEmployeeReturn0ManagerReturn1(currentUserId);
             mainFrame.loggedIn(username, isEmployeeManager);// status indicates if succesfully logged in and what privildedges are granted to the user
@@ -65,7 +65,7 @@ public class Application {
     }
     public void sendAssistanceRequest(String description) {
         //send this description to database
-//        databaseEndpoint.saveNewAssistanceRequest(currentUserId, description);
+        databaseEndpoint.saveNewAssistanceRequest(currentUserId, description);
         System.out.println("Description: " + description);
         mainFrame.setDashboardPage(0);
     }
