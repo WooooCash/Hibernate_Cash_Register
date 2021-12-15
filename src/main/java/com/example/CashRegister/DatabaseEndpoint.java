@@ -37,18 +37,17 @@ public class DatabaseEndpoint extends Thread {
     public static DatabaseEndpoint getDatabaseEndpoint() {
         return databaseEndpoint;
     }
-    public static int basicEmployeeReturn0ManagerReturn1(String name){
+
+    public static int basicEmployeeReturn0ManagerReturn1(int user_id){
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        String sql = "select e.name, e.password from EmployeeEntity e " +
-                "where e.employeeId not in (select nvl(e2.managerid,0) from EmployeeEntity e2) " +
-                "and e.name = :name";
+        String sql = "from EmployeeEntity where managerid = :user_id";
         Query query = session.createQuery(sql);
-        query.setParameter("name", name);
-        List is_employee_manager = query.list();
-        System.out.println(is_employee_manager);
+        query.setParameter("user_id", (long)user_id);
+        List<EmployeeEntity> output = query.list();
+        System.out.println(output);
         session.close();
-        return !is_employee_manager.isEmpty() ? 0 : 1;
+        return output.isEmpty() ? 0 : 1;
     }
     public static int[] login(String name, String password){
         Session session = factory.getCurrentSession();
@@ -235,7 +234,7 @@ public class DatabaseEndpoint extends Thread {
     public ArrayList<ProductEntity> getAllProducts(){
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        String sql = "from ProductEntity";
+        String sql = "from ProductEntity order by name";
         Query query = session.createQuery(sql);
         ArrayList<ProductEntity> listOfProducts = (ArrayList<ProductEntity>) query.list();
         session.close();
@@ -388,4 +387,21 @@ public class DatabaseEndpoint extends Thread {
         session.close();
         return listOfCustomAssistanceRequest;
     }
+
+    public String getManagerName(int id) {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        String sql = "from EmployeeEntity m where exists (select 1 from EmployeeEntity e where e.employeeId = :id and e.managerid = m.employeeId )";
+        Query query = session.createQuery(sql).setParameter("id", (long)id);
+        List<EmployeeEntity> output = query.list();
+
+        session.close();
+
+        if (output.isEmpty())
+            return null;
+
+
+        return output.get(0).getName();
+    }
+
 }

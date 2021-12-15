@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 public class AssistanceRequestPanel extends JPanel {
 
     private Application app;
+    private DatabaseEndpoint db;
 
     private JLabel label;
     private JTextArea textArea;
@@ -16,6 +17,7 @@ public class AssistanceRequestPanel extends JPanel {
 
     public AssistanceRequestPanel(MainFrame mainFrame) {
         app = Application.getApp();
+        db = DatabaseEndpoint.getDatabaseEndpoint();
 
         this.setLayout(new BorderLayout());
         this.setBorder(new EmptyBorder(new Insets(10, 50, 10, 50)));
@@ -49,9 +51,28 @@ public class AssistanceRequestPanel extends JPanel {
         bottomPanel.setLayout(new BorderLayout());
         bottomPanel.add(sendButton, BorderLayout.NORTH);
 
+        JPanel managerAvailablePanel = new JPanel();
+        managerAvailablePanel.setPreferredSize(new Dimension(0, 50));
+
+        JLabel managerAvailableLabel = new JLabel();
+
+        String managerName = db.getManagerName(app.getCurrentUserId());
+        if (managerName == null) {
+            managerAvailablePanel.setBackground(Color.gray);
+        } else {
+            if (app.getManagerAvailable()) {
+                managerAvailablePanel.setBackground(Color.green);
+                managerAvailableLabel.setText("Your manager " + managerName + " is available");
+            } else {
+                managerAvailablePanel.setBackground(Color.red);
+                managerAvailableLabel.setText("Your manager " + managerName + " is not available");
+            }
+            managerAvailablePanel.add(managerAvailableLabel, SwingConstants.CENTER);
+        }
+        bottomPanel.add(managerAvailablePanel, BorderLayout.SOUTH);
+
         this.add(label, BorderLayout.NORTH);
         this.add(textArea, BorderLayout.CENTER);
-
         this.add(bottomPanel, BorderLayout.SOUTH);
 
 
