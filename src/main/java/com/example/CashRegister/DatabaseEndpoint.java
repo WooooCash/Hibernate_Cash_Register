@@ -234,7 +234,7 @@ public class DatabaseEndpoint extends Thread {
     public ArrayList<ProductEntity> getAllProducts(){
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        String sql = "from ProductEntity";
+        String sql = "from ProductEntity order by name";
         Query query = session.createQuery(sql);
         ArrayList<ProductEntity> listOfProducts = (ArrayList<ProductEntity>) query.list();
         session.close();
