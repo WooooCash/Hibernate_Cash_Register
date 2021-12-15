@@ -45,8 +45,6 @@ public class AssistanceRequestReceiverPanel extends JPanel{
                     date.getYear() + " : " + assistanceRequestList.get( i ).getName());
         }
 
-//        Integer[] testData = new Integer[200];
-//        for (int i = 0; i < 200; i++) testData[i] = i;
 
         requestList = new JList(stringsToShow.toArray());
 //        requestList.setListData();
@@ -82,21 +80,18 @@ public class AssistanceRequestReceiverPanel extends JPanel{
         rightPanel.setLayout(new BorderLayout());
         String html = "<html><body style='width: %1spx'>%1s";
         String s = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean eu nulla urna. Donec sit amet risus nisl, a porta enim. Quisque luctus, ligula eu scelerisque gravida, tellus quam vestibulum urna, ut aliquet sapien purus sed erat. Pellentesque consequat vehicula magna, eu aliquam magna interdum porttitor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed sollicitudin sapien non leo tempus lobortis. Morbi semper auctor ipsum, a semper quam elementum a. Aliquam eget sem metus.";
-        leftPanel.setPreferredSize(new Dimension(200, 0));
+        leftPanel.setPreferredSize(new Dimension(300, 0));
 //        rightPanel.setPreferredSize(new Dimension(400, 400));
         rightPanel.setBackground(Color.orange);
 
         requestScrollPane = new JScrollPane(requestList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         leftPanel.add(requestScrollPane, BorderLayout.CENTER);
-//        rightPanel.add(l, Border/Layout.CENTER);
         JPanel l12 = new JPanel();
         l12.setLayout(new FlowLayout() );
         l12.setPreferredSize(new Dimension(400, 50));
         l12.add(name, BorderLayout.EAST);
         l12.add(lastName, BorderLayout.CENTER);
-//        rightPanel.add(name, BorderLayout.SOUTH);
-//        rightPanel.add(lastName, BorderLayout.SOUTH);
         rightPanel.add( l12, BorderLayout.NORTH );
         rightPanel.add(dateOfRequest, BorderLayout.SOUTH);
         rightPanel.add(description, BorderLayout.CENTER);

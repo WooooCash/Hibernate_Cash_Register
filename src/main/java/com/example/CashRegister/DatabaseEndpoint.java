@@ -6,6 +6,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class DatabaseEndpoint extends Thread {
@@ -54,7 +55,6 @@ public class DatabaseEndpoint extends Thread {
         session.beginTransaction();
         String sql = "select e.employeeId, e.gender from EmployeeEntity e where lower(e.name)=:name and e.password=:password";
         Query query = session.createQuery(sql);
-        //System.out.println(query);
         query.setParameter("name", name.toLowerCase( Locale.ROOT ) )
                 .setParameter("password", password);
         List list = query.list();
@@ -417,5 +417,27 @@ public class DatabaseEndpoint extends Thread {
         MembershipaccountEntity mA= (MembershipaccountEntity) query.list().get(0);
         session.close();
         return mA;
+    }
+    public String getSpecialProduct(double price){
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+
+        String sql = "select sp.specialproductname, spc.name from SpecialproductsEntity sp, SpecialproductcategoryEntity spc " +
+                "where sp.specialcategoryId = spc.specialcategoryId and sp.rewardthreshold <= :price " +
+                "and :todayDate between spc.begindate and spc.enddate";
+        Query query = session.createQuery(sql);
+        query.setParameter("price", (long)price);
+        query.setParameter("todayDate", new Date() );
+        List<Object[]> output = query.list();
+
+        if( output.isEmpty() ) {
+            session.close();
+            return "";
+        }
+        int i = new Random().nextInt( output.size() );
+        String specialProductInfo = "\n\nSPECIAL SEASONAL PRODUCT:\n\n Product: " + output.get(i)[0] + " from Category " +
+                output.get( i )[1];
+        session.close();
+        return specialProductInfo;
     }
 }

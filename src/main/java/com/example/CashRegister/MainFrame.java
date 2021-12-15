@@ -146,11 +146,6 @@ public class MainFrame extends JFrame {
         updateComponent(centerPanel);
     }
 
-//    public void createOrder() {
-//        centerPanel.remove(0);
-//        centerPanel.add(new OrderPanel(this), BorderLayout.CENTER);
-//        updateComponent(centerPanel);
-//    }
 
     public void createOrder() {
         System.out.println("weszlo");
