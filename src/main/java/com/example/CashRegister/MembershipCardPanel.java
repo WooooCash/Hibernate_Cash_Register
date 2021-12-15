@@ -25,14 +25,11 @@ public class MembershipCardPanel extends Container {
         okButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(membershipCardPhone.getText());
-//                DatabaseEndpoint databaseEndpoint = DatabaseEndpoint.getDatabaseEndpoint();
                 if (membershipCardPhone.getText().equals("")){
                     JOptionPane.showMessageDialog(null, "No phone number inserted. Try again");
                     return;
                 }
                 long phoneNumber = Long.parseLong( membershipCardPhone.getText() );
-//                String outputFromDatabase = "cosik";
                 MembershipaccountEntity outputFromDatabase =  databaseEndpoint.getMembershipAccountEntity( phoneNumber );
                 if( outputFromDatabase == null ) {
                     JOptionPane.showMessageDialog(null,
