@@ -270,23 +270,33 @@ public class OrderDashboard extends JFrame {
                                 orderProducts.get(i).getProductId(),
                                 order_id
                         );
-                    invoiceEntity.setTaxamount(databaseEndpoint.getTaxAmount(order_id));
-                    invoiceEntity.setNetprice((float) (computedOrderSum - invoiceEntity.getTaxamount()));
-                    databaseEndpoint.updateInvoiceEntity(invoiceEntity);
+                    if(invoiceCreated) {
+                        invoiceEntity.setTaxamount(databaseEndpoint.getTaxAmount(order_id));
+                        invoiceEntity.setNetprice((float) (computedOrderSum - invoiceEntity.getTaxamount()));
+                        databaseEndpoint.updateInvoiceEntity(invoiceEntity);
+                    }
                     if( typeOfTransaction.equals("gotowka") ) {
                         float sumOfCash = BigDecimal.valueOf(Float.valueOf(amountOfCash.getText())).
                                 setScale(2, RoundingMode.HALF_UP).floatValue();
-                        if ( sumOfCash > computedOrderSum) {
+                        if ( sumOfCash >= computedOrderSum) {
+                            String specialProductInfo = databaseEndpoint.getSpecialProduct(computedOrderSum);
                             float change = BigDecimal.valueOf(sumOfCash - computedOrderSum).
                                     setScale(2, RoundingMode.HALF_UP).floatValue();
                             JOptionPane.showMessageDialog(null,
                                     "Cash from customer was equal: " + sumOfCash + "zl \n"+
                                     "Cash from Order was equal: "+computedOrderSum + "zl \n"+
-                                    "Change: "+ (change) + "zl",
+                                    "Change: "+ (change) + "zl"+specialProductInfo,
                                     "Change",
                                     JOptionPane.PLAIN_MESSAGE);
-
                         }
+                    }
+                    else{
+                        String specialProductInfo = databaseEndpoint.getSpecialProduct(computedOrderSum);
+                        if( !specialProductInfo.equals("") )
+                            JOptionPane.showMessageDialog(null,
+                                    specialProductInfo,
+                                    "Special Product Info",
+                                    JOptionPane.PLAIN_MESSAGE);
                     }
                     if (invoiceCreated) {
                         databaseEndpoint.updateInvoiceEntity(invoiceEntity);
