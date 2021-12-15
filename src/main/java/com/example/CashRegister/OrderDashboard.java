@@ -52,9 +52,6 @@ public class OrderDashboard extends JFrame {
         final ArrayList<ProductEntity>[] productList = new ArrayList[]{new ArrayList<>(0)};
 
         ArrayList<ProductEntity> productOrigin = databaseEndpoint.getAllProducts();
-//        ArrayList<ProductEntity> productOrigin = new ArrayList<>();
-//        productOrigin.add( create(1, "micha ryzu", "kg", 12.32, 200, "N", 1,231) );
-//        productOrigin.add( create(2, "worek ziemniorow", "kg", 12.14, 10, "N", 1,2311) );
 
         ArrayList<String> orderNamings = new ArrayList<String>(0);
         productAmount = new ArrayList<Integer>(0);
@@ -66,8 +63,6 @@ public class OrderDashboard extends JFrame {
         group.add(cardRadioButton);
         cashRadioButton.setSelected(true);
 //        here importing data for product
-//        productOrigin.add(create(1, "Cosik", "kg",0.5, 100,"Y",2, 500100300));
-//        productOrigin.add(create(2, "jakos", "lol",0.7, 200, "N",3, 120123123));
         String [] namingsShowed = new String[productOrigin.size()];
         for(int i =0 ; i < productOrigin.size(); ++i){
             namingsShowed[i] = productOrigin.get(i).getName();
@@ -402,13 +397,11 @@ public class OrderDashboard extends JFrame {
             percentDiscount = Double.parseDouble(output[1]);
             couponID = Long.parseLong( output[2] );
             percentDiscount = BigDecimal.valueOf(percentDiscount).setScale(2, RoundingMode.HALF_UP).floatValue();
-            System.out.println("procencik:" + percentDiscount);
         }
         else {
             permaDiscount = Double.parseDouble(output[1]);
             couponID = Long.parseLong( output[2] );
             permaDiscount = BigDecimal.valueOf(permaDiscount).setScale(2, RoundingMode.HALF_UP).floatValue();
-            System.out.println("staloliczbowa:" + permaDiscount);
         }
         addCouponButton.setText("Remove coupon with code: " + couponCode);
         addCouponButton.setForeground(Color.red);

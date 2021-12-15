@@ -45,11 +45,8 @@ public class AssistanceRequestReceiverPanel extends JPanel{
                     date.getYear() + " : " + assistanceRequestList.get( i ).getName());
         }
 
-//        Integer[] testData = new Integer[200];
-//        for (int i = 0; i < 200; i++) testData[i] = i;
 
         requestList = new JList(stringsToShow.toArray());
-//        requestList.setListData();
         name = new JLabel("Huhi");
         name.setBackground(Color.red);
         lastName = new JLabel("Yas");
@@ -89,14 +86,11 @@ public class AssistanceRequestReceiverPanel extends JPanel{
         requestScrollPane = new JScrollPane(requestList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         leftPanel.add(requestScrollPane, BorderLayout.CENTER);
-//        rightPanel.add(l, Border/Layout.CENTER);
         JPanel l12 = new JPanel();
         l12.setLayout(new FlowLayout() );
         l12.setPreferredSize(new Dimension(400, 50));
         l12.add(name, BorderLayout.EAST);
         l12.add(lastName, BorderLayout.CENTER);
-//        rightPanel.add(name, BorderLayout.SOUTH);
-//        rightPanel.add(lastName, BorderLayout.SOUTH);
         rightPanel.add( l12, BorderLayout.NORTH );
         rightPanel.add(dateOfRequest, BorderLayout.SOUTH);
         rightPanel.add(description, BorderLayout.CENTER);
