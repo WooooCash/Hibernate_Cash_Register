@@ -228,7 +228,7 @@ public class OrderDashboard extends JFrame {
 
                     if( sumOfCash < computedOrderSum ){
                         JOptionPane.showMessageDialog(null,
-                                "Too small amount of cash to cover the price of car",
+                                "Too small amount of cash to cover the price of cart",
                                 "Error while checking",
                                 JOptionPane.PLAIN_MESSAGE);
                         return;
@@ -271,11 +271,14 @@ public class OrderDashboard extends JFrame {
                         invoiceEntity.setNetprice((float) (computedOrderSum - invoiceEntity.getTaxamount()));
                         databaseEndpoint.updateInvoiceEntity(invoiceEntity);
                     }
+                    String specialProductInfo = "";
+                    if(membershipAccount != 404)
+                        specialProductInfo = databaseEndpoint.getSpecialProduct(computedOrderSum);
                     if( typeOfTransaction.equals("gotowka") ) {
                         float sumOfCash = BigDecimal.valueOf(Float.valueOf(amountOfCash.getText())).
                                 setScale(2, RoundingMode.HALF_UP).floatValue();
                         if ( sumOfCash >= computedOrderSum) {
-                            String specialProductInfo = databaseEndpoint.getSpecialProduct(computedOrderSum);
+
                             float change = BigDecimal.valueOf(sumOfCash - computedOrderSum).
                                     setScale(2, RoundingMode.HALF_UP).floatValue();
                             JOptionPane.showMessageDialog(null,
@@ -287,7 +290,6 @@ public class OrderDashboard extends JFrame {
                         }
                     }
                     else{
-                        String specialProductInfo = databaseEndpoint.getSpecialProduct(computedOrderSum);
                         if( !specialProductInfo.equals("") )
                             JOptionPane.showMessageDialog(null,
                                     specialProductInfo,
